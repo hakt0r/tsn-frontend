@@ -10,49 +10,43 @@ import LoginButton    from './LoginButton';
 import StatusSnackbar from './StatusSnackbar';
 import { POST } from '../api';
 
-async function requestLogin(values,setValues){
-  const { email, name, password } = values;
-  const { data, response } = await POST(
-    `auth/register`,
-    { email, name, password }
+import { statusFail, statusSuccess } from '../redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+function requestRegister(state,dispatch){
+  const { email, name, password } = state;
+
+  POST( 'auth/register', { email, name, password } )
+  .then(
+    ({ data, response }) => {
+      if ( response.ok ){
+        dispatch(statusSuccess(
+          data.user, data.tokens, { message : 'Success' }
+        ));
+      } else {
+        dispatch(statusFail({
+          message : data.message,
+          code : response.status
+        }));
+      }
+    }
   );
-  if ( response.ok ){
-    setValues({
-      ...values,
-      showStatus: true,
-      status: { message : 'Success' }
-    });
-  } else {
-    setValues({
-      ...values,
-      showStatus: true,
-      status: { message : data.message, code : response.status }
-    });
-  }
 }
 
-const defaults = {
-  email        : 'Test123@gmail.com',
-  name         : 'Test123',
-  password     : 'asdasdasdsa8',
-  showPassword : false,
-  showStatus   : false,
-  status       : false
-};
-
 export default function Register() {
-  const classes = useStyles();
-  const [ values, setValues ] = React.useState(defaults);
+  const classes  = useStyles();
+  const state    = useSelector( state => state );
+  const dispatch = useDispatch();
   const submit = e => {
     e.preventDefault();
-    requestLogin(values,setValues);
+    requestRegister(state,dispatch);
   }
   return ( <>
-  <StatusSnackbar {...{values,setValues}}/>
+  <StatusSnackbar/>
   <Paper className={classes.root}>
-    <div><EmailField    {...{values,setValues}}/></div>
-    <div><NameField     {...{values,setValues}}/></div>
-    <div><PasswordField {...{values,setValues}}/></div>
-    <div><LoginButton   onClick={submit} text="Register"/></div>
+    <div><EmailField/></div>
+    <div><NameField/></div>
+    <div><PasswordField/></div>
+    <div><LoginButton onClick={submit} text="Register"/></div>
   </Paper></> );
 }

@@ -8,16 +8,20 @@ import FormControl    from '@material-ui/core/FormControl';
 import IconButton     from '@material-ui/core/IconButton';
 import AlternateEmail from '@material-ui/icons/AlternateEmail';
 import useStyles      from './styles';
+import { inputChange } from '../redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-export default function EmailField({values,setValues}) {
-  const classes = useStyles();
-  const handleChange = (e) => setValues({ ...values, email: e.target.value });
+export default function EmailField() {
+  const classes  = useStyles();
+  const email    = useSelector( (state) => state.email );
+  const dispatch = useDispatch();
+  const handleChange = (e) => dispatch(inputChange('email',e.target.value))
   return (
   <FormControl className={clsx(classes.margin, classes.textField)}>
     <InputLabel htmlFor="emailField">eMail</InputLabel>
     <Input
       name="emailField"
-      value={values.email}
+      value={email}
       onChange={handleChange}
       endAdornment={
         <InputAdornment position="end">

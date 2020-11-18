@@ -11,50 +11,47 @@ import StatusSnackbar from './StatusSnackbar';
 
 import { POST }       from '../api';
 
-function requestLogin(values,setValues){
-  const { email, password } = values;
+import { statusFail, statusSuccess } from '../redux';
+import { useDispatch, useSelector } from 'react-redux';
+
+function requestLogin(state,dispatch){
+  const { email, password } = state;
 
   POST( 'auth/login', { email, password } )
   .then(
     ({ data, response }) => {
       if ( response.ok ){
-        setValues({
-          ...values,
-          showStatus: true,
-          status: { message : 'Success' }
-        })
+        dispatch(statusSuccess(
+          data.user, data.tokens, { message : 'Success' }
+        ));
       } else {
-        setValues({
-          ...values,
-          showStatus: true,
-          status: { message : data.message, code : response.status }
-        })
+        dispatch(statusFail({
+          message : data.message,
+          code : response.status
+        }));
       }
     }
   );
-
 }
 
-const defaults = {
-  email        : 'Test123@gmail.com',
-  password     : 'asdasdasdsa8',
-  showPassword : false,
-  status       : false,
-  showStatus   : false
-};
-
 export default function InputWithIcon() {
-  const classes = useStyles();
-  const [ values, setValues ] = React.useState(defaults);
+  const classes  = useStyles();
+  const state    = useSelector( state => state );
+  const dispatch = useDispatch();
   const submit = e => {
     e.preventDefault();
-    requestLogin(values,setValues);
+    requestLogin(state,dispatch);
   }
+  const test = e => (
+    POST('auth/test',{})
+    .then( e => console.log('success') )
+  )
   return ( <>
-  <StatusSnackbar values={values} setValues={setValues}/>
+  <StatusSnackbar/>
   <Paper className={classes.root}>
-    <div><EmailField    values={values} setValues={setValues}/></div>
-    <div><PasswordField values={values} setValues={setValues}/></div>
-    <div><LoginButton   onClick={submit} text="Login"/></div>
+    <div><EmailField/></div>
+    <div><PasswordField/></div>
+    <div><LoginButton onClick={submit} text="Login"/></div>
+    <div><LoginButton onClick={test} text="Test"/></div>
   </Paper></> );
 }
