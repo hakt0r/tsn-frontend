@@ -2,7 +2,6 @@
 import React          from 'react';
 import Paper          from '@material-ui/core/Paper';
 
-import useStyles      from './styles';
 import PasswordField  from './PasswordField';
 import EmailField     from './EmailField';
 import NameField      from './NameField';
@@ -12,6 +11,9 @@ import { POST } from '../api';
 
 import { statusFail, statusSuccess } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
+import styles          from './styles';
+import { makeStyles }  from '@material-ui/core/styles';
+const useStyles = makeStyles(styles);
 
 function requestRegister(state,dispatch){
   const { email, name, password } = state;

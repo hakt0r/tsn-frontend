@@ -6,6 +6,9 @@ export const API = {
 window.API = API;
 window.API.POST = POST;
 
+// const combineResponseAndData = async response =>
+//   ({ response, data: await response.json() });
+
 /*
   const result = await POST("/login",{body});
   result.data.message

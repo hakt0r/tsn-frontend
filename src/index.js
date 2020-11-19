@@ -7,13 +7,12 @@ import { store } from './redux';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeSwitcher } from './theme';
 
-
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <ThemeSwitcher>
         <CssBaseline/>
-        <App />
+        <App/>
       </ThemeSwitcher>
     </Provider>
   </React.StrictMode>,

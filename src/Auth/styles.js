@@ -1,7 +1,5 @@
 
-import { makeStyles } from '@material-ui/core/styles';
-
-export default makeStyles( (theme) => ({
+export default (theme) => ({
   root: {
     width: "fit-content",
     margin: theme.spacing(1),
@@ -19,4 +17,4 @@ export default makeStyles( (theme) => ({
   button: {
     margin: theme.spacing(1),
   },
-}));
+});

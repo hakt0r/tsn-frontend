@@ -3,7 +3,7 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
 
 const themeDefaults = {
-  dark: false
+  dark: true
 }
 
 export const themeReducer = ( state=themeDefaults, action ) => {
@@ -16,7 +16,9 @@ export const themeReducer = ( state=themeDefaults, action ) => {
 
 export const themeToggle = ()=> ({type:'theme:toggle'});
 
-const lightTheme = createMuiTheme();
+const lightTheme = createMuiTheme({
+  palette: { type: "light" }
+});
 const darkTheme  = createMuiTheme({
   palette: { type: "dark" }
 });

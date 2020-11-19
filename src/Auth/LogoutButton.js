@@ -2,10 +2,12 @@
 import React              from 'react';
 import Button             from '@material-ui/core/Button';
 import Lock               from '@material-ui/icons/Lock';
-import useStyles          from './styles';
 import { API, POST_ONLY } from '../api';
 import { statusFail }     from './redux';
 import { useDispatch }    from 'react-redux';
+import styles          from './styles';
+import { makeStyles }  from '@material-ui/core/styles';
+const useStyles = makeStyles(styles);
 
 export default function LogoutButton(props) {
   const classes  = useStyles();

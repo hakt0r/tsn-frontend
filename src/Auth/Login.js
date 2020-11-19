@@ -3,7 +3,6 @@ import React          from 'react';
 
 import Paper          from '@material-ui/core/Paper';
 
-import useStyles      from './styles';
 import PasswordField  from './PasswordField';
 import EmailField     from './EmailField';
 import LoginButton    from './LoginButton';
@@ -13,6 +12,10 @@ import { POST, GET }  from '../api';
 
 import { statusFail, statusSuccess } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
+
+import styles          from './styles';
+import { makeStyles }  from '@material-ui/core/styles';
+const useStyles = makeStyles(styles);
 
 function requestLogin ( state, dispatch ){
   const { email, password } = state;

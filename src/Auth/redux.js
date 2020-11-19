@@ -19,6 +19,7 @@ try {
     showStatus: true
   });
   API.tokens = data.tokens;
+  API.user   = data.user;
 } catch(e){}
 
 export const inputChange =
@@ -46,6 +47,7 @@ export function authReducer( state=authDefaults, action ){
       return { ...state, showStatus: false };
     case 'auth:status:success':
       API.tokens = action.tokens;
+      API.user   = action.user;
       localStorage.setItem('tsn-auth',JSON.stringify({
         user: action.user,
         tokens: action.tokens
@@ -58,6 +60,7 @@ export function authReducer( state=authDefaults, action ){
       };
     case 'auth:status:fail':
       API.tokens = false;
+      API.user   = false;
       return { ...state,
         user: false,
         tokens: false,
