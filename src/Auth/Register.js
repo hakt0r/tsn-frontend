@@ -10,7 +10,7 @@ import LoginButton    from './LoginButton';
 import StatusSnackbar from './StatusSnackbar';
 import { POST } from '../api';
 
-import { statusFail, statusSuccess } from '../redux';
+import { statusFail, statusSuccess } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
 
 function requestRegister(state,dispatch){
@@ -35,7 +35,7 @@ function requestRegister(state,dispatch){
 
 export default function Register() {
   const classes  = useStyles();
-  const state    = useSelector( state => state );
+  const state    = useSelector( state => state.auth );
   const dispatch = useDispatch();
   const submit = e => {
     e.preventDefault();

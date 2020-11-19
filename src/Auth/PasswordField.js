@@ -11,11 +11,11 @@ import VisibilityOff  from '@material-ui/icons/VisibilityOff';
 
 import useStyles      from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { inputChange, toggleShowPassword } from '../redux';
+import { inputChange, toggleShowPassword } from './redux';
 
 export default function PasswordField() {
   const classes  = useStyles();
-  const {password,showPassword} = useSelector( ({password,showPassword}) => ({password,showPassword}) );
+  const {password,showPassword} = useSelector( ({auth:{password,showPassword}}) => ({password,showPassword}) );
   const dispatch = useDispatch();
   const handleChange = (e) => dispatch(inputChange('password',e.target.value))
   const handleClickShowPassword = () => dispatch(toggleShowPassword())

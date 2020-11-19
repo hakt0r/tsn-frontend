@@ -3,7 +3,7 @@ import React    from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useDispatch, useSelector } from 'react-redux';
-import { statusHide } from '../redux';
+import { statusHide } from './redux';
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -11,7 +11,7 @@ function Alert(props) {
 
 export default function StatusSnackbar() {
   const state = useSelector(
-    ({status,showStatus}) => ({status,showStatus})
+    ({auth:{status,showStatus}}) => ({status,showStatus})
   );
   const dispatch = useDispatch();
   const handleClose = (event, reason) => {

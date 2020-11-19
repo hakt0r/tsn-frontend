@@ -9,12 +9,12 @@ import EmailField     from './EmailField';
 import LoginButton    from './LoginButton';
 import StatusSnackbar from './StatusSnackbar';
 
-import { POST }       from '../api';
+import { POST, GET }  from '../api';
 
-import { statusFail, statusSuccess } from '../redux';
+import { statusFail, statusSuccess } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
 
-function requestLogin(state,dispatch){
+function requestLogin ( state, dispatch ){
   const { email, password } = state;
 
   POST( 'auth/login', { email, password } )
@@ -36,7 +36,7 @@ function requestLogin(state,dispatch){
 
 export default function InputWithIcon() {
   const classes  = useStyles();
-  const state    = useSelector( state => state );
+  const state    = useSelector( state => state.auth );
   const dispatch = useDispatch();
   const submit = e => {
     e.preventDefault();
@@ -44,7 +44,17 @@ export default function InputWithIcon() {
   }
   const test = e => (
     POST('auth/test',{})
-    .then( e => console.log('success') )
+    .then( ({response}) => console.log( response.ok ? 'success' : 'fail') )
+  )
+  const post = e => (
+    POST('post/',{
+      message:"hello!"
+    })
+    .then( ({response}) => console.log( response.ok ? 'success' : 'fail') )
+  )
+  const posts = e => (
+    GET('post/')
+    .then( ({data}) => console.log( data ) )
   )
   return ( <>
   <StatusSnackbar/>
@@ -53,5 +63,7 @@ export default function InputWithIcon() {
     <div><PasswordField/></div>
     <div><LoginButton onClick={submit} text="Login"/></div>
     <div><LoginButton onClick={test} text="Test"/></div>
+    <div><LoginButton onClick={post} text="Post"/></div>
+    <div><LoginButton onClick={posts} text="Posts"/></div>
   </Paper></> );
 }

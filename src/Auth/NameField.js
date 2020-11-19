@@ -9,11 +9,11 @@ import IconButton     from '@material-ui/core/IconButton';
 import AccountCircle  from '@material-ui/icons/AccountCircle';
 import useStyles      from './styles';
 import { useDispatch, useSelector } from 'react-redux';
-import { inputChange } from '../redux';
+import { inputChange } from './redux';
 
 export default function NameField() {
   const classes = useStyles();
-  const name    = useSelector( (state) => state.name );
+  const name    = useSelector( (state) => state.auth.name );
   const dispatch = useDispatch();
   const handleChange = (e) => dispatch(inputChange('name',e.target.value))
   return (

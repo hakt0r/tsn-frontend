@@ -2,8 +2,8 @@
   "name": "sample-backend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://sz.hktr.de/",
-  "proxy-local": "http://localhost:5001/",
+  "proxy-remote": "https://sz.hktr.de/",
+  "proxy": "http://localhost:5001/",
   "dependencies": {
     "@material-ui/core": "^4.11.0",
     "@material-ui/lab": "^4.0.0-alpha.56",

@@ -8,12 +8,12 @@ import FormControl    from '@material-ui/core/FormControl';
 import IconButton     from '@material-ui/core/IconButton';
 import AlternateEmail from '@material-ui/icons/AlternateEmail';
 import useStyles      from './styles';
-import { inputChange } from '../redux';
+import { inputChange } from './redux';
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function EmailField() {
   const classes  = useStyles();
-  const email    = useSelector( (state) => state.email );
+  const email    = useSelector( (state) => state.auth.email );
   const dispatch = useDispatch();
   const handleChange = (e) => dispatch(inputChange('email',e.target.value))
   return (

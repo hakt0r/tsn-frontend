@@ -1,30 +1,44 @@
 
+export const API = {
+  tokens: false
+};
+
+window.API = API;
+window.API.POST = POST;
+
 /*
   const result = await POST("/login",{body});
   result.data.message
   result.response.ok
 */
-export function POST ( uri, body ) {
-  const headers = {};
-  if ( POST.tokens ) headers['Authorization'] = POST.tokens.access.token;
-  return fetch( `/api/${uri}`, {
+
+export async function POST_ONLY ( uri, body ) {
+  const headers = { 'Content-Type': 'application/json' };
+  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
+  const response = await fetch( `/api/${uri}`, {
     method: "POST",
-    headers: { ...headers, 'Content-Type': 'application/json' },
+    headers,
     body: JSON.stringify(body)
-  })
-  .then( response => { // >>>>>>>>>>
-    return response.json() //      v
-    // recieve json  vvvv          v
-    .then( function (data) { //    v
-      //       vvvv--^^^^          v
-      return { data, response } // v
-    });//            ^^^^^^^^<<<<<<<
-    // modify response into an object
-    //   containing data and response
-  })
-  // .then ( obj )
-  //         obj = {
-  //          data : { message : ... }
-  //          response : { status: 200, ... }
-  //         }
+  });
+  return response;
+}
+
+export async function POST ( uri, body ) {
+  const headers = { 'Content-Type': 'application/json' };
+  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
+  const response = await fetch( `/api/${uri}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body)
+  });
+  const data = await response.json();
+  return { data, response };
+}
+
+export async function GET ( uri ) {
+  const headers = { 'Content-Type': 'application/json' };
+  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
+  const response = await fetch( `/api/${uri}`, { headers });
+  const     data = await response.json();
+  return { data, response };
 }
