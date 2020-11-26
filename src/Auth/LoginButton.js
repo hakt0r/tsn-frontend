@@ -2,8 +2,9 @@
 import React          from 'react';
 import Button         from '@material-ui/core/Button';
 import LockOpenIcon   from '@material-ui/icons/LockOpen';
-import styles          from './styles';
-import { makeStyles }  from '@material-ui/core/styles';
+import styles         from './styles';
+import { makeStyles } from '@material-ui/core/styles';
+
 const useStyles = makeStyles(styles);
 
 export default function LoginButton(props) {

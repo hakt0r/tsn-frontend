@@ -5,13 +5,12 @@ import MenuItem   from '@material-ui/core/MenuItem';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { API } from '../api';
 
-export default function PostTools({post}) {
+export default function PostTools({post,edit,remove}) {
   const [ anchorEl, setAnchorEl ] = React.useState(null);
-
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose =      () => setAnchorEl(null);
   const ownerActions = [
-    <MenuItem key="edit"   onClick={handleClose}>Edit</MenuItem>,
+    <MenuItem key="edit"   onClick={ e => { handleClose(); edit() } }>Edit</MenuItem>,
     <MenuItem key="delete" onClick={handleClose}>Delete</MenuItem>
   ];
   const viewerActions = [
@@ -25,7 +24,7 @@ export default function PostTools({post}) {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
-      >{ post.author === API.user.id ? ownerActions : viewerActions }</Menu>
+      >{ post.author.id === API.user.id ? ownerActions : viewerActions }</Menu>
     </div>
   );
 }

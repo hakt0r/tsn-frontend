@@ -1,4 +1,6 @@
-import { API } from "../api";
+
+import { useSelector } from "react-redux";
+import { API, POST_ONLY } from "../api";
 
 const authDefaults = {
   email        : 'anx.test.user@gmail.com',
@@ -9,6 +11,16 @@ const authDefaults = {
   showStatus   : false,
   user         : false,
   tokens       : false
+};
+
+export const IfAuth = ({not,children}) => {
+  const auth = useSelector( state => state.auth.tokens );
+  return auth ? children : null;
+};
+
+export const IfNotAuth = ({not,children}) => {
+  const auth = useSelector( state => state.auth.tokens );
+  return ! auth ? children : null;
 };
 
 try {
@@ -70,4 +82,14 @@ export function authReducer( state=authDefaults, action ){
     case '@@INIT': return authDefaults;
     default:       return state;
   }
+}
+
+export const logoutRequest = (dispatch)=> {
+  if ( ! API.tokens ) return;
+  POST_ONLY('auth/logout',{
+    refreshToken:API.tokens.refresh.token
+  })
+  .then( response =>
+    dispatch(statusFail({message:"Logged out!"}))
+  );
 }

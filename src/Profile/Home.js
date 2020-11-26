@@ -3,7 +3,8 @@ import React, { useEffect }         from 'react';
 import Paper                        from '@material-ui/core/Paper';
 import { POST, GET }                from '../api';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppBar, Avatar, makeStyles } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import Posts from '../Post/Posts';
 
 const post = dispatch => e => (
   POST('post/',{
@@ -20,24 +21,11 @@ const getPosts = dispatch => (
 const useStyles = makeStyles( theme => ({
   root: {
     padding: theme.spacing(1),
-    margin: theme.spacing(1)
+    position: 'sticky',
+    top:0
   }
 }));
 
-export default function InputWithIcon() {
-  const classes = useStyles();
-  const auth     = useSelector( state => state.auth );
-  const { mine } = useSelector( state => state.post );
-  const dispatch = useDispatch();
-  useEffect(
-    $=> { if (auth.tokens) getPosts(dispatch) }
-  ,[auth]);
-  return <>
-  <AppBar className={classes.root}>
-    <Avatar/>{auth.user.name}
-  </AppBar>
-  { mine && ! mine.code ?
-  <Paper>
-    {mine.map((post,idx)=><p key={idx}>{post.message}</p>)}
-  </Paper> : null }</>;
+export default function Home() {
+  return <Posts/>;
 }

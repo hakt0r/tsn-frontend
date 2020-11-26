@@ -1,23 +1,26 @@
 
-import { Button, Paper, TextField } from "@material-ui/core";
+import { Button, IconButton, Paper, TextField } from "@material-ui/core";
 import { useState } from "react";
-import { postTheme } from "./styles";
+import { paperTheme } from "../styles";
 import { makeStyles } from "@material-ui/core/styles";
+import { Comment } from "@material-ui/icons";
 
-const useStyles = makeStyles( postTheme );
+const useStyles = makeStyles( paperTheme );
 
 const { POST, API } = require("../api");
 
 // POST /api/post/, { message:String }
 
-const addPost = ( message )=> {
-  POST( `post/`, { message } );
+const addPost = async ( message, post )=> {
+  let uri = `post/`;
+  if ( post ) uri = `post/${post.id}`;
+  await POST( uri, { message } );
 }
 
-export default function AddPost(){
+export default function AddPost({post}){
   const classes = useStyles();
-  const [state,setState] = useState({message:''});
-  return <Paper className={classes.root}>
+  const [state,setState] = useState({show:post?false:true,message:''});
+  return state.show ? <Paper className={classes.root}>
     <div>
       <TextField
         multiline
@@ -29,10 +32,12 @@ export default function AddPost(){
       <Button
         variant="contained"
         color="primary"
-        onClick={ e => addPost(state.message) }
+        onClick={ async e => { await addPost(state.message,post); if ( post ) setState({show:false,message:''}) } }
       >
         Post
       </Button>
     </div>
-  </Paper>;
+  </Paper> : <IconButton
+    onClick={ e => setState({...state,show:true})}
+  ><Comment/></IconButton>;
 }
