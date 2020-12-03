@@ -8,7 +8,7 @@ import FormControl    from '@material-ui/core/FormControl';
 import IconButton     from '@material-ui/core/IconButton';
 import AccountCircle  from '@material-ui/icons/AccountCircle';
 import { useDispatch, useSelector } from 'react-redux';
-import { inputChange } from './redux';
+import { inputChange } from './actions';
 import styles          from './styles';
 import { makeStyles }  from '@material-ui/core/styles';
 const useStyles = makeStyles(styles);

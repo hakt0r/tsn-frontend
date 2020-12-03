@@ -10,7 +10,7 @@ import Visibility     from '@material-ui/icons/Visibility';
 import VisibilityOff  from '@material-ui/icons/VisibilityOff';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { inputChange, toggleShowPassword } from './redux';
+import { inputChange, toggleShowPassword } from './actions';
 import styles          from './styles';
 import { makeStyles }  from '@material-ui/core/styles';
 const useStyles = makeStyles(styles);

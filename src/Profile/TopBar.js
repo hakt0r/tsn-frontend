@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { AppBar, Avatar, Button, IconButton, makeStyles } from '@material-ui/core';
+import { AppBar, Avatar, Button, IconButton, makeStyles, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import MainMenu from './MainMenu';
 import logo     from '../logo.svg';
@@ -14,6 +14,11 @@ const useStyles = makeStyles( theme => ({
     padding: theme.spacing(1),
     position: 'sticky',
     top:0
+  },
+  height: {
+    position:'relative',
+    top:'3px',
+    marginLeft:theme.spacing(1)
   }
 }));
 
@@ -24,7 +29,9 @@ export default function TopBar() {
   return (
   <AppBar className={classes.root}>
     <Link to="/"><Avatar src={logo}/></Link>
-    <span>{auth.user.name}</span>
+    <Typography
+      className={classes.height}
+      variant="h4">{auth.user.name}</Typography>
     <span style={{flexGrow:1}}></span>
     <Search/>
     <MainMenu/>

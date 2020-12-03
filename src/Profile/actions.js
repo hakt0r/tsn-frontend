@@ -4,9 +4,9 @@ import { GET, POST } from '../api';
 
 const { dispatch } = store;
 
-export const search = async (match,type='User',field='name') => {
+export const search = async ( match, type='User', field='name' ) => {
   const { data, response } = await POST(
-    '/search',
+    'search',
     { match, type, field }
   );
   if ( response.ok ) dispatch(

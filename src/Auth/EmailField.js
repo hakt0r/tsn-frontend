@@ -7,7 +7,7 @@ import InputAdornment  from '@material-ui/core/InputAdornment';
 import FormControl     from '@material-ui/core/FormControl';
 import IconButton      from '@material-ui/core/IconButton';
 import AlternateEmail  from '@material-ui/icons/AlternateEmail';
-import { inputChange } from './redux';
+import { inputChange } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles          from './styles';

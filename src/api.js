@@ -49,6 +49,14 @@ export async function GET ( uri ) {
   return { data, response };
 }
 
+export async function PUT ( uri ) {
+  const headers = { 'Content-Type': 'application/json' };
+  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
+  const response = await fetch( `/api/${uri}`, { method: "PUT", headers });
+  const     data = await response.json();
+  return { data, response };
+}
+
 export async function DELETE ( uri ) {
   const headers = { 'Content-Type': 'application/json' };
   if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;

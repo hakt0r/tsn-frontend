@@ -1,51 +1,55 @@
 
-import { Button } from "@material-ui/core";
-import { useDispatch } from "react-redux";
-import Login    from "./Auth/Login";
-import Register from "./Auth/Register";
-import Home from "./Profile/Home";
-import TopBar from "./Profile/TopBar";
-import { themeToggle } from "./theme";
-import { Switch, Route } from "react-router-dom";
+import { Button }            from "@material-ui/core";
+import { useDispatch }       from "react-redux";
+import { themeToggle }       from "./theme";
+import { Switch, Route }     from "react-router-dom";
 import { IfAuth, IfNotAuth } from "./Auth/redux";
-import Posts from "./Post/Posts";
-import UserProfile from "./Profile/UserProfile";
-
-function Center({children}){
-  return <div
-    style={{
-      position:"fixed",
-      width:"fit-content",
-      height:"fit-content",
-      top:"50%",
-      left:"50%",
-      translate:"translate(-50%,-50%)"
-    }}
-  >{children}</div>;
-}
+import Login                 from "./Auth/Login";
+import Home                  from "./Profile/Home";
+import TopBar                from "./Profile/TopBar";
+import Posts                 from "./Post/Posts";
+import UserProfile           from "./Profile/UserProfile";
+import CheckAuth             from "./Auth/CheckAuth";
+import Center                from "./Layout/Center";
+import bg                    from './bg.jpg';
+import rindr                 from './rindr.svg';
+import MyProfile from "./Profile/MyProfile";
 
 function App() {
   const dispatch = useDispatch();
   return <>
-    <TopBar/>
+    <img alt="" src={bg} style={{
+      position: "fixed",
+      top:0,
+      left:0,
+      width:'100vw',
+      height:'100vh',
+      zIndex:-1,
+      filter:"blur(3px) grayscale(0.8)",
+      opacity:0.1,
+      objectFit:'cover'
+    }}/>
+    <CheckAuth/>
     <IfNotAuth>
+      <img alt="" src={rindr} style={{
+        position: "fixed",
+        top:"10vh",
+        left:'50%',
+        width:'70vw',
+        zIndex:-1,
+        transform:'translate(-50%)',
+        objectFit:'cover'
+      }}/>
       <Center>
         <Login/>
       </Center>
     </IfNotAuth>
     <IfAuth>
+      <TopBar/>
       <Switch>
-        <Route path="/" exact component={Home}/>
         <Route path="/posts" exact component={Posts}/>
-        <Route path="/auth/login" exact component={Login} />
-        <Route path="/auth/register" exact component={Register} />
         <Route path="/user/:userId" component={UserProfile} />
-        <Route path="/auth/register" exact component={Register} />
-        <Route path="/settings">
-          <Button onClick={ e => dispatch(themeToggle()) }>
-            Theme Switch
-          </Button>
-        </Route>
+        <Route path="/:tab?" component={MyProfile}/>
       </Switch>
     </IfAuth>
   </>;

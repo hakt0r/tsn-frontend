@@ -1,4 +1,5 @@
 
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { API, POST_ONLY } from "../api";
 
@@ -10,7 +11,8 @@ const authDefaults = {
   status       : false,
   showStatus   : false,
   user         : false,
-  tokens       : false
+  tokens       : false,
+  register     : false 
 };
 
 export const IfAuth = ({not,children}) => {
@@ -34,23 +36,10 @@ try {
   API.user   = data.user;
 } catch(e){}
 
-export const inputChange =
-  (key,value) => ({type:'auth:input:change',key,value});
-
-export const toggleShowPassword =
-  () => ({type:'auth:toggle:showPassword'});
-
-export const statusHide =
-  () => ({type:'auth:status:hide'});
-
-export const statusSuccess =
-  (user,tokens,status) => ({type:'auth:status:success',user,tokens,status});
-
-export const statusFail =
-  (status) => ({type:'auth:status:fail',status});
-
 export function authReducer( state=authDefaults, action ){
   switch ( action.type ){
+    case 'auth:toggleLoginMode':
+      return { ...state, register: !state.register };
     case 'auth:input:change':
       return { ...state, [action.key]: action.value };
     case 'auth:toggle:showPassword':
@@ -73,6 +62,7 @@ export function authReducer( state=authDefaults, action ){
     case 'auth:status:fail':
       API.tokens = false;
       API.user   = false;
+      localStorage.setItem('tsn-auth',JSON.stringify({ user: false, tokens: false }))
       return { ...state,
         user: false,
         tokens: false,
@@ -82,14 +72,4 @@ export function authReducer( state=authDefaults, action ){
     case '@@INIT': return authDefaults;
     default:       return state;
   }
-}
-
-export const logoutRequest = (dispatch)=> {
-  if ( ! API.tokens ) return;
-  POST_ONLY('auth/logout',{
-    refreshToken:API.tokens.refresh.token
-  })
-  .then( response =>
-    dispatch(statusFail({message:"Logged out!"}))
-  );
 }

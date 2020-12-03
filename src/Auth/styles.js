@@ -1,6 +1,8 @@
+import { fade } from "@material-ui/core";
 
 export default (theme) => ({
   root: {
+    backgroundColor: fade(theme.palette.background.paper,0.3),
     width: "fit-content",
     margin: theme.spacing(1),
     padding: theme.spacing(1),
@@ -12,7 +14,8 @@ export default (theme) => ({
     margin: theme.spacing(1),
   },
   textField: {
-    width: '25ch',
+    minWidth: '25ch',
+    maxWidth: '35ch'
   },
   button: {
     margin: theme.spacing(1),

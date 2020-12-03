@@ -4,12 +4,14 @@ import Menu       from '@material-ui/core/Menu';
 import MenuItem   from '@material-ui/core/MenuItem';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import { Avatar, Divider } from '@material-ui/core';
-import { logoutRequest } from '../Auth/redux';
+import { logoutRequest } from '../Auth/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { PATCH, POST } from '../api';
 
 export default function MainMenu({post}) {
   const dispatch = useDispatch();
-  const avatar = useSelector( state => state.post.avatar );
+  const avatar = useSelector( state => state.auth.user.avatar );
+  const user   = useSelector( state => state.auth.user );
   const [ element, setElement ] = React.useState(null);
   const handleClick = (event) => setElement(event.currentTarget);
   const handleClose =      () => setElement(null);
@@ -17,7 +19,10 @@ export default function MainMenu({post}) {
     handleClose(e);
     const read = new FileReader();
     read.readAsDataURL(e.target.files[0]);
-    read.onload = e => dispatch({type:'auth:avatar',url:e.target.result});
+    read.onload = e => {
+      PATCH(`user/${user.id}`,{avatar:e.target.result});
+      dispatch({type:'auth:avatar',url:e.target.result});
+    }
   }
   return (
     <div>
@@ -29,7 +34,7 @@ export default function MainMenu({post}) {
         onClose={handleClose}
       >
         <MenuItem component="label">
-          <Avatar/>
+          Avatar...
           <input type="file" hidden onChange={avatarUpload}/>
         </MenuItem>
         <MenuItem key="edit" onClick={handleClose}>Edit</MenuItem>
