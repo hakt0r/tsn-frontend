@@ -2,6 +2,10 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { API, POST_ONLY } from "../api";
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { RestLink } from 'apollo-link-rest';
+import Axios from 'axios';
 
 const authDefaults = {
   email        : 'anx.test.user@gmail.com',
@@ -34,6 +38,9 @@ try {
   });
   API.tokens = data.tokens;
   API.user   = data.user;
+  Axios.defaults.headers.common = {
+    Authorization : data.tokens.access.token
+  }
 } catch(e){}
 
 export function authReducer( state=authDefaults, action ){
@@ -46,23 +53,36 @@ export function authReducer( state=authDefaults, action ){
       return { ...state, showPassword: !state.showPassword };
     case 'auth:status:hide':
       return { ...state, showStatus: false };
+
     case 'auth:status:success':
       API.tokens = action.tokens;
       API.user   = action.user;
       localStorage.setItem('tsn-auth',JSON.stringify({
         user: action.user,
         tokens: action.tokens
-      }))
+      }));
+
+      Axios.defaults.headers.common.Authorization =
+        action.tokens.access.token;
+
+      //const restLink = new RestLink({ uri: "/api/" });
+      //const client = new ApolloClient({
+      //  link: restLink,
+      //  cache: new InMemoryCache(),
+      //});
+      //API.client = client;
       return { ...state,
         user: action.user,
         tokens: action.tokens,
         status: action.status,
-        showStatus: true
+        showStatus: true,
+        // client
       };
     case 'auth:status:fail':
       API.tokens = false;
       API.user   = false;
       localStorage.setItem('tsn-auth',JSON.stringify({ user: false, tokens: false }))
+      delete Axios.defaults.headers.common.Authorization
       return { ...state,
         user: false,
         tokens: false,

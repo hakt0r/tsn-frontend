@@ -1,13 +1,59 @@
 
+import Axios from 'axios';
+
 export const API = {
   tokens: false
 };
 
-window.API = API;
+window.API        = API;
 window.API.POST   = POST;
 window.API.GET    = GET;
 window.API.DELETE = DELETE;
 window.API.PATCH  = PATCH;
+
+export async function GET ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.get(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+export async function POST_ONLY ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.post(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+export async function POST ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.post(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+export async function PUT ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.put(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+export async function DELETE ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.delete(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+export async function PATCH ( uri, body ) {
+  console.warn('deprecated: old api used ' + uri);
+  const  response = await Axios.patch(`/api/${uri}`,body);
+  response.ok = true;
+  return { response, data: response.data };
+}
+
+
 
 // const combineResponseAndData = async response =>
 //   ({ response, data: await response.json() });
@@ -18,6 +64,7 @@ window.API.PATCH  = PATCH;
   result.response.ok
 */
 
+/*
 export async function POST_ONLY ( uri, body ) {
   const headers = { 'Content-Type': 'application/json' };
   if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
@@ -75,3 +122,4 @@ export async function PATCH ( uri, body ) {
   const data = await response.json();
   return { data, response };
 }
+*/

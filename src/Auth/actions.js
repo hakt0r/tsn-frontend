@@ -1,46 +1,48 @@
 
 import { API, POST, POST_ONLY } from '../api';
 import { store } from '../redux';
+import Axios from 'axios';
 
 const { dispatch } = store;
 
-export function requestRegister(){
-  const { email, name, password } = store.getState().auth;
-  POST( 'auth/register', { email, name, password } )
-  .then(
-    ({ data, response }) => {
-      if ( response.ok ){
-        dispatch(statusSuccess(
-          data.user, data.tokens, { message : 'Success' }
-        ));
-      } else {
-        dispatch(statusFail({
-          message : data.message,
-          code : response.status
-        }));
-      }
-    }
-  );
+export async function requestRegister(){
+  const { email, name, password } = store.getState().auth;;
+
+  try {
+    const { data } = await Axios.post(
+      '/api/auth/register',
+      { email, name, password }
+    );
+    dispatch(statusSuccess(
+      data.user, data.tokens, { message : 'Success' }
+    ));
+  } catch (error) {
+    console.log('error',error.response)
+    dispatch(statusFail({
+      message : error.message,
+      code    : error.response.status
+    }));
+  }
 }
 
-export function requestLogin (){
+export async function requestLogin (){
   const { email, password } = store.getState().auth;;
 
-  POST( 'auth/login', { email, password } )
-  .then(
-    ({ data, response }) => {
-      if ( response.ok ){
-        dispatch(statusSuccess(
-          data.user, data.tokens, { message : 'Success' }
-        ));
-      } else {
-        dispatch(statusFail({
-          message : data.message,
-          code : response.status
-        }));
-      }
-    }
-  );
+  try {
+    const { data } = await Axios.post(
+      '/api/auth/login',
+      { email, password }
+    );
+    dispatch(statusSuccess(
+      data.user, data.tokens, { message : 'Success' }
+    ));
+  } catch (error) {
+    console.log('error',error.response)
+    dispatch(statusFail({
+      message : error.message,
+      code    : error.response.status
+    }));
+  }
 }
 
 export function toggleLoginMode(){
@@ -48,14 +50,12 @@ export function toggleLoginMode(){
   dispatch({type:"auth:toggleLoginMode"})
 }
 
-export const logoutRequest = (dispatch)=> {
+export const logoutRequest = async (dispatch)=> {
   if ( ! API.tokens ) return;
-  POST_ONLY('auth/logout',{
+  await Axios.post('/api/auth/logout',{
     refreshToken:API.tokens.refresh.token
-  })
-  .then( response =>
-    dispatch(statusFail({message:"Logged out!"}))
-  );
+  });
+  dispatch(statusFail({ message: "Logged out!" }));
 }
 
 export const inputChange =
@@ -73,14 +73,10 @@ export const statusSuccess =
 export const statusFail =
   (status) => ({type:'auth:status:fail',status});
 
-export function checkAuth(){
-  const { email, name, password } = store.getState().auth;
-  POST( 'auth/test', {} )
-  .then(
-    ({ data:{user,tokens}, response }) => {
-      if ( ! response.ok ){
-        dispatch(statusFail({message:"Logged out!"}))
-      }
-    }
-  );
+export async function checkAuth(){
+  try {
+    await Axios.post( 'auth/test', {} );
+  } catch ( error ) {
+    dispatch(statusFail( { message:"Logged out!" } ));
+  }
 }
