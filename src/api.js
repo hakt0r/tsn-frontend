@@ -13,7 +13,7 @@ window.API.PATCH  = PATCH;
 
 export async function GET ( uri, body ) {
   console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.get(`/api/${uri}`,body);
+  const response = await Axios.get(`/api/${uri}`,body);
   response.ok = true;
   return { response, data: response.data };
 }

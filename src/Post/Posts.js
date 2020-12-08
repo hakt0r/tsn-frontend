@@ -6,13 +6,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import moment from 'moment';
 import FlexRow from "../Layout/FlexRow";
 import FlexGrow from "../Layout/FlexGrow";
-import { Cancel, Favorite, FavoriteOutlined, FavoriteRounded, WhatsApp } from "@material-ui/icons";
+import { Cancel, CommentRounded, Favorite, FavoriteOutlined, FavoriteRounded, WhatsApp } from "@material-ui/icons";
 import { TextField } from "@material-ui/core";
-import { Timeline } from "@material-ui/lab";
+import { Timeline }  from "@material-ui/lab";
+import { update }    from "./actions";
 
 const useStyles = makeStyles( paperTheme );
  
-const { GET, POST, PUT } = require("../api");
+const { GET, POST, PUT, DELETE } = require("../api");
 
 const addPost = async ( message, post )=> {
   let uri = `post/`;
@@ -26,30 +27,13 @@ const Post = ({classes,post,index,level,root,stack})=> {
     addComment:false,
     message:''
   });
-  return ( <>
-  { level === 0 ? null :
-  <Stepper activeStep="current">
-    <Step key="origin">
-      <StepLabel>
-        {root.author.name}
-      </StepLabel>
-    </Step>
-    {stack.map(post =>
-    <Step key={post.id}>
-      <StepLabel>
-        {post.author.name}
-      </StepLabel>
-    </Step>
-    )}
-    <Step key="origin">
-      <StepLabel>
-        {post.author.name}
-      </StepLabel>
-    </Step>
-  </Stepper> }
+  post.author = post.author || { name:'User' };
+  return ( <div style={{backgroundColor:'#00000011'}}>
+  
   <Typography variant="body2">
     { post.message }
   </Typography>
+
   { state.addComment ? <>
   <TextField
     multiline
@@ -61,14 +45,27 @@ const Post = ({classes,post,index,level,root,stack})=> {
   </> : null }
   <FlexRow>
     <Chip size="small" label={ post.reactions.length } icon={
-      <Favorite style={{color:post.yourReactions.includes('Like')?'red':'black'}}/>
+      <Favorite style={{ color: post.yourReactions.Like ? 'red' : 'black' }}/>
     } />&nbsp;
     <Chip size="small" label={ post.author.name } icon={ <Avatar style={{width:'24px',height:'24px'}} src={post.author.avatar}/> } />&nbsp;
     <Chip size="small" label={ moment(post.createdAt).fromNow() }/>
     <FlexGrow/>
+    <Chip size="small"
+      label={
+        post.comments.length + ' Comments'}
+      icon={ <CommentRounded/> }
+      clickable
+      color={ state.showComment ? 'primary' : 'inherit' }
+      onClick={ e => {
+        setState({...state,showComment:!state.showComment})}
+      }
+    />
     <Link onClick={
       e => PUT(`like/post/${post.id}/like`)
     }>Like</Link>
+    <Link onClick={
+      e => DELETE(`like/post/${post.id}/like`)
+    }>Unlike</Link>
     <PostTools post={post}/>&nbsp;
     { state.addComment ? <><Chip size="small" label="Cancel" icon={ <Cancel/> }
       clickable
@@ -84,16 +81,17 @@ const Post = ({classes,post,index,level,root,stack})=> {
       }
     />
   </FlexRow>
-  { post.comments.map((post,index) =>
-    <Post key={index} {...{post,index,classes,root,level:level+1,stack:[...stack,post]}}/>
-  )}
-  </> );
+  { ! state.showComments ? post.comments.map( post =>
+    <Post key={post.id} {...{post,index,classes,root,level:level+1,stack:[...stack,post]}}/>
+  ) : null }
+  </div> );
 }
 
 export default function Posts({id}){
   const classes = useStyles();
   const [ posts, setPosts ] = useState([]);
-  const update = async ()=> {
+  const updates = async ()=> {
+    update()
     const result = await GET(id ? `user/posts/${id}` : `post`);
     if ( ! result.response.ok ) return;
     setPosts(result.data);

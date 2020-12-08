@@ -65,24 +65,29 @@ export function authReducer( state=authDefaults, action ){
       Axios.defaults.headers.common.Authorization =
         action.tokens.access.token;
 
-      //const restLink = new RestLink({ uri: "/api/" });
-      //const client = new ApolloClient({
-      //  link: restLink,
-      //  cache: new InMemoryCache(),
-      //});
-      //API.client = client;
+      const restLink = new RestLink({
+        uri: "/api/",
+        headers: {
+          Authorization:action.tokens.access.token
+        }
+      });
+      const client = new ApolloClient({
+        link: restLink,
+        cache: new InMemoryCache(),
+      });
+      API.client = client;
       return { ...state,
         user: action.user,
         tokens: action.tokens,
         status: action.status,
         showStatus: true,
-        // client
+        client
       };
     case 'auth:status:fail':
       API.tokens = false;
       API.user   = false;
       localStorage.setItem('tsn-auth',JSON.stringify({ user: false, tokens: false }))
-      delete Axios.defaults.headers.common.Authorization
+      delete Axios.defaults.headers.common.Authorization;
       return { ...state,
         user: false,
         tokens: false,
