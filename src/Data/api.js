@@ -64,13 +64,13 @@ export default class Cache {
     if ( ! state )
       state = Cache.byURL[hash] = {};
     if ( Cache.STATE_LOADING === state.status ){
-      console.log('join',uri,options)
+      //console.log('join',uri,options)
       return new Promise( resolve => state.waiting.push(resolve) );
     } else if ( state.date > Date.now() - 1000 ) {
-      console.log('cached',uri,options)
+      //console.log('cached',uri,options)
       return { ...state.response, data:state.data, json: ()=> state.data };
     } else {
-      console.log('fetch',uri,options)
+      //console.log('fetch',uri,options)
       state.status  = Cache.STATE_LOADING;
       state.waiting = [];
       const response = await fetch(uri,options);

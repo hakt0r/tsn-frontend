@@ -2,8 +2,8 @@
   "name": "sample-backend",
   "version": "0.1.0",
   "private": true,
-  "proxyss": "https://sz.hktr.de/",
-  "proxy": "http://localhost:5001/",
+  "proxy": "https://sz.hktr.de/",
+  "proxyss": "http://localhost:5001/",
   "dependencies": {
     "@apollo/client": "^3.3.4",
     "@material-ui/core": "^4.11.0",

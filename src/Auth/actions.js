@@ -40,7 +40,7 @@ export async function requestLogin (){
     console.log('error',error.response)
     dispatch(statusFail({
       message : error.message,
-      code    : error.response.status
+      code    : 401
     }));
   }
 }

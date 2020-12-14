@@ -6,6 +6,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { API } from '../Data/api';
 import { Chip } from '@material-ui/core';
 import { IconButton } from '@material-ui/core';
+import { deletePost } from '../Data/actions';
 
 export default function PostTools({post,edit,remove}) {
   const [ anchorEl, setAnchorEl ] = React.useState(null);
@@ -13,13 +14,13 @@ export default function PostTools({post,edit,remove}) {
   const handleClose =      () => setAnchorEl(null);
   const ownerActions = [
     <MenuItem key="edit"   onClick={ e => { handleClose(); edit() } }>Edit</MenuItem>,
-    <MenuItem key="delete" onClick={handleClose}>Delete</MenuItem>
+    <MenuItem key="delete" onClick={ e => { handleClose(); deletePost(post.id) } }>Delete</MenuItem>
   ];
   const viewerActions = [
     <MenuItem key="report" onClick={handleClose}>Report</MenuItem>
   ];
   return (
-    <div>
+    <>
       <IconButton size="small" onClick={handleClick}>
         <ExpandMore/>
       </IconButton>
@@ -29,6 +30,6 @@ export default function PostTools({post,edit,remove}) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >{ post.author.id === API.user.id ? ownerActions : viewerActions }</Menu>
-    </div>
+    </>
   );
 }

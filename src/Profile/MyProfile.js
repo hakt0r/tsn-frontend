@@ -27,7 +27,9 @@ import UserTools   from './UserTools';
 import { makeStyles }  from "@material-ui/core/styles";
 import { paperTheme }  from "../styles";
 import { IconButton } from '@material-ui/core';
-import { PostAdd } from '@material-ui/icons';
+
+import Show from '../Layout/Show';
+import { addFriend, rejectFriend } from './actions';
 
 const useStyles = makeStyles( paperTheme );
 
@@ -50,7 +52,7 @@ function User ({id}) {
   );
 }
 
-function Friend({id}) {
+function Friend({id,incoming,outgoing}) {
   const friend = useUser(id);
   return (
   <TableRow key={friend.id}>
@@ -60,13 +62,26 @@ function Friend({id}) {
     <TableCell>
       {friend.name}
     </TableCell>
+    <TableCell>
+      <Show when={incoming}>
+        <IconButton onClick={e=>addFriend(friend.id)}>
+          approve
+        </IconButton>
+      </Show>
+        <IconButton onClick={e=>rejectFriend(friend.id)}>
+          { incoming ? 'reject' : outgoing ? 'withdraw' : 'unfriend' } 
+        </IconButton>
+    </TableCell>
   </TableRow>);
 }
 
 function Friends () {
-  const user = useSelector( s => s.auth.user );
+  const userId = useSelector( s => s.auth.user.id );
+  const user   = useUser( userId );
   return <Table>
   { user.friends.map( friend => <Friend id={friend.id||friend}/> )}
+  { user.friendRequests.map( friend => <Friend incoming id={friend.id||friend}/> )}
+  { user.friendRequestsSent.map( friend => <Friend outgoing id={friend.id||friend}/> )}
   </Table>;
 }
 
