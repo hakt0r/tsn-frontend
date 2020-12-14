@@ -7,7 +7,7 @@ import EmailField     from './EmailField';
 import NameField      from './NameField';
 import LoginButton    from './LoginButton';
 import StatusSnackbar from './StatusSnackbar';
-import { POST } from '../api';
+import { POST } from '../Data/api';
 
 import { statusFail, statusSuccess } from './actions';
 import { useDispatch, useSelector } from 'react-redux';

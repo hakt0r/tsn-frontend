@@ -3,8 +3,9 @@ import Button     from '@material-ui/core/Button';
 import Menu       from '@material-ui/core/Menu';
 import MenuItem   from '@material-ui/core/MenuItem';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { API } from '../api';
+import { API } from '../Data/api';
 import { Chip } from '@material-ui/core';
+import { IconButton } from '@material-ui/core';
 
 export default function PostTools({post,edit,remove}) {
   const [ anchorEl, setAnchorEl ] = React.useState(null);
@@ -19,7 +20,9 @@ export default function PostTools({post,edit,remove}) {
   ];
   return (
     <div>
-      <Chip size="small" label="Actions" onClick={handleClick} icon={<ExpandMore/>}/>
+      <IconButton size="small" onClick={handleClick}>
+        <ExpandMore/>
+      </IconButton>
       <Menu
         anchorEl={anchorEl}
         keepMounted

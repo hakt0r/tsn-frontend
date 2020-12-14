@@ -1,10 +1,10 @@
 
 const postDefaults = {
-  mine: [],
+  posts:  {},
   search: {}
 };
 
-export const postReducer = ( state=postDefaults, action )=> {
+export const cacheReducer = ( state=postDefaults, action )=> {
   const { id, data, list, model, field, match } = action;
   switch ( action.type ){
     case "user:profile":
@@ -16,7 +16,16 @@ export const postReducer = ( state=postDefaults, action )=> {
     case "auth:avatar":
       return { ...state, avatar:action.url }
     case "posts:update":
-      return { ...state, mine: data };
+      return { ...state, posts: { ...state.posts,
+        [action.userId]: action.posts
+      }};
+    case "posts:update:one":
+      const current = state.posts[action.userId];
+      return { ...state,
+        posts: { ...state.posts,
+          [action.userId]: current.map( post => post.id === action.data.id ? action.data : post )
+        }
+      };
     default: return state;
   }
 }

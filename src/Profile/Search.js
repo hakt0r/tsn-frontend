@@ -50,7 +50,7 @@ const useStyles = makeStyles( theme => ({
 export default () => {
   const classes = useStyles();
   const history = useHistory();
-  const { list } = useSelector( state => state.post.search );
+  const { list } = useSelector( state => state.cache.search );
   const change = e => search(e.target.value)
   const select = (e,v,r) => {
     if ( r === 'select-option' ) history.push(`/user/${v.id}`);

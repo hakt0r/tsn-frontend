@@ -1,7 +1,7 @@
 
 import React, { useEffect }         from 'react';
 import Paper                        from '@material-ui/core/Paper';
-import { POST, GET }                from '../api';
+import { POST, GET }                from '../Data/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import Posts from '../Post/Posts';

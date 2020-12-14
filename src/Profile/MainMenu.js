@@ -6,7 +6,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import { Avatar, Divider } from '@material-ui/core';
 import { logoutRequest } from '../Auth/actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { PATCH, POST } from '../api';
+import { PATCH, POST } from '../Data/api';
 
 export default function MainMenu({post}) {
   const dispatch = useDispatch();

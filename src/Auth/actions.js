@@ -1,5 +1,5 @@
 
-import { API, POST, POST_ONLY } from '../api';
+import { API, POST, POST_ONLY } from '../Data/api';
 import { store } from '../redux';
 import Axios from 'axios';
 
@@ -75,7 +75,7 @@ export const statusFail =
 
 export async function checkAuth(){
   try {
-    await Axios.post( 'auth/test', {} );
+    await Axios.post( '/api/auth/test', {} );
   } catch ( error ) {
     dispatch(statusFail( { message:"Logged out!" } ));
   }

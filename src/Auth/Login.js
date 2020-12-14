@@ -6,9 +6,6 @@ import Paper          from '@material-ui/core/Paper';
 import PasswordField  from './PasswordField';
 import EmailField     from './EmailField';
 import LoginButton    from './LoginButton';
-import StatusSnackbar from './StatusSnackbar';
-
-import { POST, GET }  from '../api';
 
 import { useSelector } from 'react-redux';
 
@@ -31,7 +28,6 @@ export default function InputWithIcon() {
     else            requestLogin();
   }
   return ( <>
-  <StatusSnackbar/>
   <Paper className={classes.root}>
     <img alt="" style={{
       position:'absolute',top:0,left:0,

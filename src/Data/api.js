@@ -53,6 +53,43 @@ export async function PATCH ( uri, body ) {
   return { response, data: response.data };
 }
 
+export default class Cache {
+  static byURL = {}
+  static async fetch(uri,options){
+    options                       = options || {};
+    options.headers               = options.headers || {};
+    options.headers.authorization = window.API.tokens.access.token;
+    const hash = options.hash || uri + '::' + JSON.stringify(options);
+    let state = Cache.byURL[hash];
+    if ( ! state )
+      state = Cache.byURL[hash] = {};
+    if ( Cache.STATE_LOADING === state.status ){
+      console.log('join',uri,options)
+      return new Promise( resolve => state.waiting.push(resolve) );
+    } else if ( state.date > Date.now() - 1000 ) {
+      console.log('cached',uri,options)
+      return { ...state.response, data:state.data, json: ()=> state.data };
+    } else {
+      console.log('fetch',uri,options)
+      state.status  = Cache.STATE_LOADING;
+      state.waiting = [];
+      const response = await fetch(uri,options);
+      const     data = await response.json();
+      state.date     = Date.now();
+      state.response = response;
+      state.data     = data;
+      state.status   = Cache.STATE_READY;
+      response.json  = ()=> data;
+      response.data  = data;
+      state.waiting.forEach( resolve => resolve(response) );
+      return response;
+    }
+  }
+  static STATE_LOADING = 1;
+  static STATE_READY   = 2;
+}
+
+API.cache = new Cache();
 
 
 // const combineResponseAndData = async response =>

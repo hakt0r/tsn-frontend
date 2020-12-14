@@ -1,11 +1,10 @@
 
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { API, POST_ONLY } from "../api";
-import { ApolloClient } from 'apollo-client';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { RestLink } from 'apollo-link-rest';
-import Axios from 'axios';
+import { useSelector }   from "react-redux";
+import { API }           from "../Data/api";
+// import { ApolloClient }  from 'apollo-client';
+// import { InMemoryCache } from 'apollo-cache-inmemory';
+// import { RestLink }      from 'apollo-link-rest';
+import Axios             from 'axios';
 
 const authDefaults = {
   email        : 'anx.test.user@gmail.com',
@@ -64,24 +63,24 @@ export function authReducer( state=authDefaults, action ){
 
       Axios.defaults.headers.common.Authorization =
         action.tokens.access.token;
-
-      const restLink = new RestLink({
-        uri: "/api/",
-        headers: {
-          Authorization:action.tokens.access.token
-        }
-      });
-      const client = new ApolloClient({
-        link: restLink,
-        cache: new InMemoryCache(),
-      });
-      API.client = client;
+      //const cache = new InMemoryCache();
+      //const restLink = new RestLink({
+      //  uri: "/api/",
+      //  customFetch: (uri, options) => Cache.fetch(uri,options),
+      //  headers: {
+      //    Authorization:action.tokens.access.token
+      //  }
+      //});
+      //const client = new ApolloClient({
+      //  link: restLink,
+      //  cache: cache,
+      //});
+      //API.client = client;
       return { ...state,
         user: action.user,
         tokens: action.tokens,
         status: action.status,
-        showStatus: true,
-        client
+        showStatus: true
       };
     case 'auth:status:fail':
       API.tokens = false;

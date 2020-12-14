@@ -14,9 +14,11 @@ import Center                from "./Layout/Center";
 import bg                    from './bg.jpg';
 import rindr                 from './rindr.svg';
 import MyProfile from "./Profile/MyProfile";
+import StatusSnackbar from "./Auth/StatusSnackbar";
 
 function App() {
   const dispatch = useDispatch();
+  // <StatusSnackbar/>
   return <>
     <img alt="" src={bg} style={{
       position: "fixed",
@@ -26,7 +28,7 @@ function App() {
       height:'100vh',
       zIndex:-1,
       filter:"blur(3px) grayscale(0.8)",
-      opacity:0.1,
+      opacity:0.025,
       objectFit:'cover'
     }}/>
     <CheckAuth/>
