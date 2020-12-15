@@ -125,9 +125,9 @@ export class Cache {
     
     // If we don't get status 200 we were not successful
     if ( response.status !== 200 ){
-      Cache.REFRESHING = false;
       // Tell the others waiting for us, that it failed
       Cache.REFRESHING.forEach( resolve => resolve(false) );
+      Cache.REFRESHING = false;
       // Tell redux that we don't have authentication anymore
       API.dispatch({ type: 'auth:status:fail', status: "Refresh Failed" });
       // Tell the original request that initiated the refresh that it failed as well
