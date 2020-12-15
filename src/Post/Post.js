@@ -33,6 +33,7 @@ import { Grow } from "@material-ui/core";
 
 import Show from "../Layout/Show";
 import { deletePost, editPost } from "../Data/actions";
+import { Hidden } from "@material-ui/core";
 
 const useStyles = makeStyles( theme => ({
   postEdge: {
@@ -47,11 +48,19 @@ const useStyles = makeStyles( theme => ({
     paddingLeft:theme.spacing(3),
   },
   post: {
+    "& .comment": {
+      margin: 0,
+      borderTopLeftRadius: 0
+    },
+    overflow: 'hidden',
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     borderBottom: `${fade(theme.palette.primary.light,0.2)} solid 1px`,
     marginTop: theme.spacing(1),
     position:'relative',
+    borderBottom: `solid 1px ${theme.palette.divider}`,
+    borderRadius: theme.spacing(1),
+    background: `linear-gradient(180deg, transparent 96%, ${theme.palette.divider} 100%)`,
     "& a:visited": {
       color: 'white'
     },
@@ -76,7 +85,7 @@ const useStyles = makeStyles( theme => ({
 const addPost = async ( message, post )=> {
   let uri = `post/`;
   if ( post ) uri = `post/${post.id}`;
-  await POST( uri, { message } );
+  await Cache.post( uri, { message } );
 }
 
 function EditPost({message,submit,cancel}){
@@ -115,7 +124,8 @@ export default function Post ({post,index,level,root,stack,userId}) {
   });
   post.author = useUser(post.author);
   const hideEditor = ()=> setState({...state,editPost:false});
-  return ( <div className={classes.post}>
+  const style = level === 0 ? classes.post : `${classes.post} comment`;
+  return ( <div className={style}>
   <div className={classes.postEdge}></div>
   <div className={classes.postBody}>
     <span style={{float:"right",display:'inline-block',width:'auto'}}>
@@ -186,6 +196,9 @@ export default function Post ({post,index,level,root,stack,userId}) {
       
       <span>
         { moment(post.createdAt).fromNow() }
+        { post.updatedAt === post.createdAt
+        ? null
+        : ` (edited ${moment(post.updatedAt).fromNow()})` }
       </span>
 
       <FlexGrow/>

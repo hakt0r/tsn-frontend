@@ -5,12 +5,12 @@ import { Cache } from '../Data/api';
 const { dispatch } = store;
 
 export const search = async ( match, type='User', field='name' ) => {
-  const { data, response } = await Cache.post(
+  const response = await Cache.post(
     '/api/search',
     { match, type, field }
   );
   if ( response.ok ) dispatch(
-    { type:'search:results', list:data, match, model:type, field }
+    { type:'search:results', list:response.data, match, model:type, field }
   );
 };
 
