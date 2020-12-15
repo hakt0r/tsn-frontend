@@ -1,64 +1,20 @@
 
-import Axios from 'axios';
-
 export const API = {
   tokens: false
 };
 
-window.API        = API;
-window.API.POST   = POST;
-window.API.GET    = GET;
-window.API.DELETE = DELETE;
-window.API.PATCH  = PATCH;
+export class Cache {
 
-export async function GET ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const response = await Axios.get(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export async function POST_ONLY ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.post(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export async function POST ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.post(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export async function PUT ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.put(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export async function DELETE ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.delete(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export async function PATCH ( uri, body ) {
-  console.warn('deprecated: old api used ' + uri);
-  const  response = await Axios.patch(`/api/${uri}`,body);
-  response.ok = true;
-  return { response, data: response.data };
-}
-
-export default class Cache {
   static byURL = {}
+
+  static STATE_LOADING = 1;
+  static STATE_READY   = 2;
+  static REFRESHING    = false;
+
   static async fetch(uri,options){
-    options                       = options || {};
-    options.headers               = options.headers || {};
-    options.headers.authorization = window.API.tokens.access.token;
+    options         = options || {};
+    options.headers = options.headers || {};
+    if ( API.tokens ) options.headers.authorization = API.tokens.access.token;
     const hash = options.hash || uri + '::' + JSON.stringify(options);
     let state = Cache.byURL[hash];
     if ( ! state )
@@ -73,8 +29,16 @@ export default class Cache {
       //console.log('fetch',uri,options)
       state.status  = Cache.STATE_LOADING;
       state.waiting = [];
-      const response = await fetch(uri,options);
-      const     data = await response.json();
+      let response, data;
+      response = await fetch( uri, options );
+          data = await response.json();
+      if ( response.status === 401 && API.tokens ){
+        if ( await Cache.refreshTokens() ){
+          options.headers.authorization = API.tokens.access.token;
+          response = await fetch( uri, options );
+              data = await response.json();         
+        } 
+      }
       state.date     = Date.now();
       state.response = response;
       state.data     = data;
@@ -85,78 +49,64 @@ export default class Cache {
       return response;
     }
   }
-  static STATE_LOADING = 1;
-  static STATE_READY   = 2;
+
+  static async refreshTokens () {
+    if ( Cache.REFRESHING ){
+      return new Promise( resolve => Cache.REFRESHING.push(resolve) );
+    } else {
+      Cache.REFRESHING = [];
+      const response = await fetch('/api/auth/refresh-tokens',{
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          refreshToken: API.tokens.refresh.token
+        })
+      });
+      if ( response.status !== 200 ){
+        Cache.REFRESHING.forEach( resolve => resolve(false) );
+        Cache.REFRESHING = false;
+        API.dispatch({ type: 'auth:status:fail', status: "Refresh Failed" });
+        return false;
+      }
+      const tokens = await response.json();
+      API.tokens = tokens;
+      Cache.REFRESHING.forEach( resolve => resolve(true) );
+      Cache.REFRESHING = false;
+      API.dispatch({ type: 'auth:recover', tokens });
+      return true;
+    }
+  }
+
+  static methodic ( uri, method, body, options={} ){
+    options = { ...options, method: method };
+    options.headers = options.headers || {};
+    options.headers['content-type'] = 'application/json';
+    options.body = JSON.stringify(body);
+    return Cache.fetch( uri, options );
+  }
+
+  static get( uri, body, options ) {
+    return Cache.methodic( uri, 'GET', body, options );
+  }
+
+  static post( uri, body, options ) {
+    return Cache.methodic( uri, 'POST', body, options );
+  }
+
+  static put( uri, body, options ) {
+    return Cache.methodic( uri, 'PUT', body, options );
+  }
+
+  static patch( uri, body, options ) {
+    return Cache.methodic( uri, 'PATCH', body, options );
+  }
+
+  static delete( uri, body, options ) {
+    return Cache.methodic( uri, 'DELETE', body, options );
+  }
+
 }
 
-API.cache = new Cache();
+window.API = API;
 
-
-// const combineResponseAndData = async response =>
-//   ({ response, data: await response.json() });
-
-/*
-  const result = await POST("/login",{body});
-  result.data.message
-  result.response.ok
-*/
-
-/*
-export async function POST_ONLY ( uri, body ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body)
-  });
-  return response;
-}
-
-export async function POST ( uri, body ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify(body)
-  });
-  const data = await response.json();
-  return { data, response };
-}
-
-export async function GET ( uri ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, { headers });
-  const     data = await response.json();
-  return { data, response };
-}
-
-export async function PUT ( uri ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, { method: "PUT", headers });
-  const     data = await response.json();
-  return { data, response };
-}
-
-export async function DELETE ( uri ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, { method:'DELETE', headers });
-  return { response };
-}
-
-export async function PATCH ( uri, body ) {
-  const headers = { 'Content-Type': 'application/json' };
-  if ( API.tokens ) headers['Authorization'] = API.tokens.access.token;
-  const response = await fetch( `/api/${uri}`, {
-    method: "PATCH",
-    headers,
-    body: JSON.stringify(body)
-  });
-  const data = await response.json();
-  return { data, response };
-}
-*/
+export default Cache;

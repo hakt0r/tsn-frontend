@@ -1,7 +1,7 @@
 
-import   Cache   from "./api";
+import { Cache } from "./api";
 import { store } from "../redux";
-import Axios from "axios";
+
 const { dispatch } = store;
 
 export const getUser = (userId) => {
@@ -54,11 +54,11 @@ export const getFriends = (arrayOfUserIds)=> {
 }
 
 export const editPost = async ({id,message,images})=> {
-  const response = await Axios.patch(`/api/post/${id}`,{ message, images });
+  const response = await Cache.patch(`/api/post/${id}`,{ message, images });
   dispatch({ type:"post", post: response.data });
 }
 
 export const deletePost = async (id,post)=> {
-  const response = await Axios.delete(`/api/post/${id}`);
+  const response = await Cache.delete(`/api/post/${id}`);
   dispatch({ type:"post:delete", id });
 }

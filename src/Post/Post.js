@@ -1,14 +1,14 @@
+
 import PostTools      from "./PostTools";
 import { makeStyles } from "@material-ui/core/styles";
 import moment         from 'moment';
 import FlexRow        from "../Layout/FlexRow";
 import FlexGrow       from "../Layout/FlexGrow";
-import { fade, TextField }  from "@material-ui/core";
 import { Link }       from 'react-router-dom';
 
 import {
-  POST, PUT, DELETE
-} from "../Data/api";
+  fade, TextField
+} from "@material-ui/core";
 
 import {
   useState
@@ -137,8 +137,8 @@ export default function Post ({post,index,level,root,stack,userId}) {
       <IconButton size="small"
         onClick={
         e => post.yourReactions.Like
-          ? DELETE(`like/post/${post.id}/like`).then( ({data})=> dispatch({type:"post",post:data}))
-          : PUT(`like/post/${post.id}/like`   ).then( ({data})=> dispatch({type:"post",post:data}))
+          ? Cache.delete(`/api/like/post/${post.id}/like`).then( ({data})=> dispatch({type:"post",post:data}))
+          : Cache.put(`/api/like/post/${post.id}/like`   ).then( ({data})=> dispatch({type:"post",post:data}))
       }>
         <Badge badgeContent={post.reactions.length} color="primary">
           <Favorite style={{ color: post.yourReactions.Like ? 'red' : 'black' }}/>

@@ -1,12 +1,12 @@
-import React      from 'react';
-import Button     from '@material-ui/core/Button';
-import Menu       from '@material-ui/core/Menu';
-import MenuItem   from '@material-ui/core/MenuItem';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import { Avatar, Divider } from '@material-ui/core';
+import React             from 'react';
+import MenuIcon          from '@material-ui/icons/Menu';
+import Menu              from '@material-ui/core/Menu';
+import MenuItem          from '@material-ui/core/MenuItem';
+import { Divider }       from '@material-ui/core';
 import { logoutRequest } from '../Auth/actions';
+import { Cache }         from '../Data/api';
+import { IconButton }    from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import { PATCH, POST } from '../Data/api';
 
 export default function MainMenu({post}) {
   const dispatch = useDispatch();
@@ -20,13 +20,15 @@ export default function MainMenu({post}) {
     const read = new FileReader();
     read.readAsDataURL(e.target.files[0]);
     read.onload = e => {
-      PATCH(`user/${user.id}`,{avatar:e.target.result});
+      Cache.patch(`/api/user/${user.id}`,{avatar:e.target.result});
       dispatch({type:'auth:avatar',url:e.target.result});
     }
   }
   return (
     <div>
-      <Avatar src={avatar} onClick={handleClick}/>
+      <IconButton onClick={handleClick}>
+        <MenuIcon/>
+      </IconButton>
       <Menu
         anchorEl={element}
         keepMounted

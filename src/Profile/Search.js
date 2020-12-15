@@ -8,7 +8,7 @@ import { search       } from "./actions";
 
 const useStyles = makeStyles( theme => ({
   search: {
-    marginRight: theme.spacing(1),
+    marginRight: 0,
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
@@ -18,6 +18,9 @@ const useStyles = makeStyles( theme => ({
     marginLeft: 0,
     width: '100%',
     height: '100%',
+    "^:focus-within":{
+      marginRight: theme.spacing(1)
+    },
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(1),
       width: 'auto',
@@ -40,9 +43,12 @@ const useStyles = makeStyles( theme => ({
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     transition: theme.transitions.create('width'),
-    width: '100%',
+    width: 0,
+    "&:focus": {
+      width: '15ch'
+    },
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '10ch',
     }
   },
 }));
@@ -58,12 +64,13 @@ export default () => {
   return (
   <Autocomplete
     freeSolo
-    id="search-autocomplete-combo"
+    clearOnBlur={true}
+    blurOnSelect={true}
     options={ list || []}
     getOptionLabel={ o => o.name }
     onInputChange={change}
     onChange={select}
-    debug={true}
+    onClose={e=>search('')}
     renderInput={(params) => (
       <div className={classes.search} ref={params.InputProps.ref}>
         <div className={classes.searchIcon}>
@@ -76,7 +83,7 @@ export default () => {
             input: classes.inputInput,
           }}
           {...params.inputProps}
-        />
+          />
       </div>
   )}/> );
 }

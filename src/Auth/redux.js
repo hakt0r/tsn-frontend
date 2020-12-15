@@ -1,10 +1,6 @@
 
-import { useSelector }   from "react-redux";
-import { API }           from "../Data/api";
-// import { ApolloClient }  from 'apollo-client';
-// import { InMemoryCache } from 'apollo-cache-inmemory';
-// import { RestLink }      from 'apollo-link-rest';
-import Axios             from 'axios';
+import { useSelector } from "react-redux";
+import { API, Cache }  from "../Data/api";
 
 const authDefaults = {
   email        : 'anx.test.user@gmail.com',
@@ -28,28 +24,18 @@ export const IfNotAuth = ({not,children}) => {
   return ! auth ? children : null;
 };
 
-try {
-  const json = localStorage.getItem('tsn-auth');
-  const data = JSON.parse(json);
-  Object.assign(authDefaults,data,{
-    status: { message: 'Loaded auth' },
-    showStatus: true
-  });
-  API.tokens = data.tokens;
-  API.user   = data.user;
-  Axios.defaults.headers.common = {
-    Authorization : data.tokens.access.token
-  }
-} catch(e){}
-
 export function authReducer( state=authDefaults, action ){
   switch ( action.type ){
+
     case 'auth:toggleLoginMode':
       return { ...state, register: !state.register };
+
     case 'auth:input:change':
       return { ...state, [action.key]: action.value };
+
     case 'auth:toggle:showPassword':
       return { ...state, showPassword: !state.showPassword };
+
     case 'auth:status:hide':
       return { ...state, showStatus: false };
 
@@ -59,39 +45,34 @@ export function authReducer( state=authDefaults, action ){
       localStorage.setItem('tsn-auth',JSON.stringify({
         user: action.user,
         tokens: action.tokens
-      }));
-
-      Axios.defaults.headers.common.Authorization =
-        action.tokens.access.token;
-      //const cache = new InMemoryCache();
-      //const restLink = new RestLink({
-      //  uri: "/api/",
-      //  customFetch: (uri, options) => Cache.fetch(uri,options),
-      //  headers: {
-      //    Authorization:action.tokens.access.token
-      //  }
-      //});
-      //const client = new ApolloClient({
-      //  link: restLink,
-      //  cache: cache,
-      //});
-      //API.client = client;
+      }));      
       return { ...state,
         user: action.user,
         tokens: action.tokens,
         status: action.status,
         showStatus: true
       };
+
+    case "auth:recover":
+      return { ...state,
+        tokens: action.tokens,
+        status: "Refresh Auth",
+        showStatus: true
+      };
+
     case 'auth:status:fail':
       API.tokens = false;
       API.user   = false;
-      localStorage.setItem('tsn-auth',JSON.stringify({ user: false, tokens: false }))
-      delete Axios.defaults.headers.common.Authorization;
+      localStorage.setItem(
+        'tsn-auth',
+        JSON.stringify({ user: false, tokens: false }
+      ));
       return { ...state,
-        user: false,
-        tokens: false,
-        status: action.status,
-        showStatus: true
+        checkFailed: true,
+        user:        false,
+        tokens:      false,
+        showStatus:  true,
+        status:      action.status
       };
     case '@@INIT': return authDefaults;
     default:       return state;

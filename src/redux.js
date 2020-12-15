@@ -1,6 +1,6 @@
 
-import { authReducer }  from "./Auth/redux";
 import { themeReducer } from "./theme";
+import { authReducer  } from "./Auth/redux";
 import { cacheReducer } from "./Data/redux";
 
 const { createStore, combineReducers } = require("redux");

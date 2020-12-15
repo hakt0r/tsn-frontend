@@ -1,65 +1,56 @@
 
-import { API, POST, POST_ONLY } from '../Data/api';
-import { store } from '../redux';
-import Axios from 'axios';
+import { CallToActionSharp } from '@material-ui/icons';
+import { API, Cache } from '../Data/api';
+import { store }      from '../redux';
 
 const { dispatch } = store;
 
-export async function requestRegister(){
-  const { email, name, password } = store.getState().auth;;
+API.dispatch = dispatch;
 
+export async function requestRegister(){
+  const { email, name, password } = store.getState().auth;
   try {
-    const { data } = await Axios.post(
+    const { data } = await Cache.post(
       '/api/auth/register',
       { email, name, password }
     );
-    dispatch(statusSuccess(
-      data.user, data.tokens, { message : 'Success' }
-    ));
+    statusSuccess( data.user, data.tokens, { message : 'Success' });
   } catch (error) {
-    console.log('error',error.response)
-    dispatch(statusFail({
-      message : error.message,
-      code    : error.response.status
-    }));
+    console.log('error',error.response);
+    statusFail({ message: error.message, code: error.response.status });
   }
 }
 
 export async function requestLogin (){
-  const { email, password } = store.getState().auth;;
-
+  const { email, password } = store.getState().auth;
   try {
-    const { data } = await Axios.post(
+    const { data } = await Cache.post(
       '/api/auth/login',
       { email, password }
     );
-    dispatch(statusSuccess(
-      data.user, data.tokens, { message : 'Success' }
-    ));
+    statusSuccess( data.user, data.tokens, { message : 'Success' } );
   } catch (error) {
     console.log('error',error.response)
-    dispatch(statusFail({
-      message : error.message,
-      code    : 401
-    }));
+    statusFail({ message: error.message, code: 401 });
   }
 }
 
 export function toggleLoginMode(){
-  const { register } = store.getState().auth;
-  dispatch({type:"auth:toggleLoginMode"})
+  dispatch({ type: "auth:toggleLoginMode" });
 }
 
 export const logoutRequest = async (dispatch)=> {
   if ( ! API.tokens ) return;
-  await Axios.post('/api/auth/logout',{
-    refreshToken:API.tokens.refresh.token
-  });
-  dispatch(statusFail({ message: "Logged out!" }));
+  try {
+    await Cache.post('/api/auth/logout',{
+      refreshToken:API.tokens.refresh.token
+    });
+  } catch ( error ){}
+  statusFail({ message: "Logged out!" });
 }
 
 export const inputChange =
-  (key,value) => ({type:'auth:input:change',key,value});
+  ( key, value ) => ({type:'auth:input:change',key,value});
 
 export const toggleShowPassword =
   () => ({type:'auth:toggle:showPassword'});
@@ -67,16 +58,28 @@ export const toggleShowPassword =
 export const statusHide =
   () => ({type:'auth:status:hide'});
 
-export const statusSuccess =
-  (user,tokens,status) => ({type:'auth:status:success',user,tokens,status});
+export const statusSuccess = ( user, tokens, status ) =>
+  dispatch({ type: 'auth:status:success', user, tokens, status });
 
-export const statusFail =
-  (status) => ({type:'auth:status:fail',status});
+export const statusFail = (status) =>
+  dispatch({ type: 'auth:status:fail', status });
 
 export async function checkAuth(){
   try {
-    await Axios.post( '/api/auth/test', {} );
+    const json = localStorage.getItem('tsn-auth');
+    const data = JSON.parse(json);
+    await Cache.post(
+      '/api/auth/test', {},
+      { headers: { Authorization: data.tokens.access.token }
+    });
+    API.tokens = data.tokens;
+    API.user   = data.user;
+    statusSuccess( 
+      data.user,
+      data.tokens,
+      `Welcome back ${data.user.name}`
+    );
   } catch ( error ) {
-    dispatch(statusFail( { message:"Logged out!" } ));
+    statusFail( { message:"Logged out!" } );
   }
 }

@@ -10,9 +10,6 @@ import Avatar     from '@material-ui/core/Avatar'
 import Grid       from '@material-ui/core/Grid'
 import Paper      from '@material-ui/core/Paper'
 import Tab        from '@material-ui/core/Tab'
-import Table      from '@material-ui/core/Table'
-import TableCell  from '@material-ui/core/TableCell'
-import TableRow   from '@material-ui/core/TableRow'
 import Tabs       from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 
@@ -20,9 +17,7 @@ import { useUser, useUsers } from '../Data/hooks';
 
 import Posts       from '../Post/Posts';
 import AddPost     from '../Post/AddPost';
-import StyledBadge from '../Layout/StyledBadge';
 import FlexGrow    from '../Layout/FlexGrow';
-import UserTools   from './UserTools';
 
 import { makeStyles }  from "@material-ui/core/styles";
 import { paperTheme }  from "../styles";
@@ -30,6 +25,8 @@ import { IconButton } from '@material-ui/core';
 
 import Show from '../Layout/Show';
 import { addFriend, rejectFriend } from './actions';
+import { HighlightOff, PersonAddDisabled, ThumbDown, ThumbUp } from '@material-ui/icons';
+import FlexRow from '../Layout/FlexRow';
 
 const useStyles = makeStyles( paperTheme );
 
@@ -53,36 +50,39 @@ function User ({id}) {
 }
 
 function Friend({id,incoming,outgoing}) {
-  const friend = useUser(id);
+  const friend  = useUser(id);
+  const classes = useStyles();
   return (
-  <TableRow key={friend.id}>
-    <TableCell>
-      <Avatar src={friend.avatar}/>
-    </TableCell>
-    <TableCell>
+  <FlexRow key={friend.id} className={classes.row}>
+    <Avatar src={friend.avatar}/>
+    <Typography variant="h6" style={{marginLeft:'1ch'}}>
       {friend.name}
-    </TableCell>
-    <TableCell>
-      <Show when={incoming}>
-        <IconButton onClick={e=>addFriend(friend.id)}>
-          approve
-        </IconButton>
-      </Show>
-        <IconButton onClick={e=>rejectFriend(friend.id)}>
-          { incoming ? 'reject' : outgoing ? 'withdraw' : 'unfriend' } 
-        </IconButton>
-    </TableCell>
-  </TableRow>);
+    </Typography>
+    <FlexGrow/>
+    <IconButton onClick={e=>rejectFriend(friend.id)}>
+      { incoming
+      ? <ThumbDown color="secondary"/>
+      : outgoing
+      ? <HighlightOff color="secondary"/>
+      : <PersonAddDisabled color="secondary"/> } 
+    </IconButton>
+    <Show when={incoming}>
+      <IconButton onClick={e=>addFriend(friend.id)}>
+        <ThumbUp color="primary"/>
+      </IconButton>
+    </Show>
+  </FlexRow> );
 }
 
 function Friends () {
   const userId = useSelector( s => s.auth.user.id );
   const user   = useUser( userId );
-  return <Table>
+  if ( ! user.friends ) return null;
+  return ( <>
   { user.friends.map( friend => <Friend id={friend.id||friend}/> )}
   { user.friendRequests.map( friend => <Friend incoming id={friend.id||friend}/> )}
   { user.friendRequestsSent.map( friend => <Friend outgoing id={friend.id||friend}/> )}
-  </Table>;
+  </> );
 }
 
 export default function MyProfile() {
@@ -92,10 +92,10 @@ export default function MyProfile() {
   return <>
     <Tabs value={tab} onChange={ (e,tab) => history.push(`/${tab}`) }>
       <Tab label="Timeline" value="main" />
+      <Tab label="Post"     value="post" />
       <Tab label="Friends"  value="friends" />
       <Tab label="Messages" value="messages" />
     </Tabs>
-    <User  id={user.id} />
     <Switch>
       <Route path="/friends" component={Friends}/>
       <Route path="/post/add" component={AddPost}/>

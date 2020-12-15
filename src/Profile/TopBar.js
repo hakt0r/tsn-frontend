@@ -37,10 +37,10 @@ export default function TopBar() {
     </Typography>
     <span style={{flexGrow:1}}></span>
     <IfAuth>
-      <Search/>
-      <IconButton>
-        <PostAdd onClick={ e => history.push("/post/add")}/>
-      </IconButton>
+      <Search/>&nbsp;
+      <IconButton onClick={ e => history.push("/post/add")}>
+        <PostAdd/>
+      </IconButton>&nbsp;
       <MainMenu/>
     </IfAuth>
   </AppBar> );

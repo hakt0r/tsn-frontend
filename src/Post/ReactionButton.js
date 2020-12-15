@@ -11,8 +11,8 @@ export default ({post})=> {
   <Button size="small"
     onClick={
     e => post.yourReactions.Like
-      ? DELETE(`like/post/${post.id}/like`).then( ({post})=> dispatch({type:"post",post}))
-      : PUT(`like/post/${post.id}/like`   ).then( ({post})=> dispatch({type:"post",post}))
+      ? Cache.delete(`/api/like/post/${post.id}/like`).then( ({post})=> dispatch({type:"post",post}))
+      : Cache.put(`/api/like/post/${post.id}/like`   ).then( ({post})=> dispatch({type:"post",post}))
   }>
     <Badge badgeContent={post.reactions.length} color="primary">
       <Favorite style={{ color: post.yourReactions.Like ? 'red' : 'black' }}/>
