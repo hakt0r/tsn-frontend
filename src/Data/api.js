@@ -122,12 +122,10 @@ export class Cache {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ refreshToken: API.tokens.refresh.token })
     });
-
-    // We're done refreshing...
-    Cache.REFRESHING = false;
-
+    
     // If we don't get status 200 we were not successful
     if ( response.status !== 200 ){
+      Cache.REFRESHING = false;
       // Tell the others waiting for us, that it failed
       Cache.REFRESHING.forEach( resolve => resolve(false) );
       // Tell redux that we don't have authentication anymore
@@ -140,6 +138,7 @@ export class Cache {
     const tokens = API.tokens = await response.json();
     // Tell the others waiting for us, that it worked
     Cache.REFRESHING.forEach( resolve => resolve(true) );
+    Cache.REFRESHING = false;
     // Tell redux that we have new tokens
     API.dispatch({ type: 'auth:recover', tokens });
     // Tell the original request that initiated the refresh that it worked as well
