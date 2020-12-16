@@ -23,17 +23,16 @@ import {
 } from "@material-ui/core";
 
 import {
-  Cancel, CommentRounded, Favorite, WhatsApp
+  Cancel, Favorite, WhatsApp
 } from "@material-ui/icons";
 
 import { useUser } from "../Data/hooks";
 import { PostRef } from "./Posts";
 import { IconButton } from "@material-ui/core";
-import { Grow } from "@material-ui/core";
 
 import Show from "../Layout/Show";
-import { deletePost, editPost } from "../Data/actions";
-import { Hidden } from "@material-ui/core";
+import { editPost } from "../Data/actions";
+import Cache from "../Data/api";
 
 const useStyles = makeStyles( theme => ({
   postEdge: {

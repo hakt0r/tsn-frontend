@@ -30,7 +30,9 @@ export const cacheReducer = ( state=cacheDefaults, action )=> {
       return { ...state, post:updated };
 
     case "user:posts":
-      return { ...state, postsFor: { ...state.postsFor, [userId]: posts } };
+      const have = state.postsFor[userId];
+      const more = ! state.postsFor[userId] ? posts : have.concat(posts);
+      return { ...state, postsFor: { ...state.postsFor, [userId]: more } };
 
     case "user:posts:only":
       return { ...state, postsOnlyFor: { ...state.postsOnlyFor, [userId]: posts } };

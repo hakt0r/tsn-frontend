@@ -27,8 +27,8 @@ export const getUserPostsOnly = (userId)=> {
   .then( response => dispatch({ type:"user:posts:only", posts: response.data, userId }) )
 }
 
-export const getUserPosts = (userId)=> {
-  Cache.fetch(`/api/user/${userId}/posts`)
+export const getUserPosts = (userId, before = Date.now() )=> {
+  Cache.fetch(`/api/user/${userId}/posts?before=${before}`)
   .then( response => {
     dispatch({ type:"user:posts", posts: response.data, userId })
   })

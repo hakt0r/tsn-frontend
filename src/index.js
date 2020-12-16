@@ -8,16 +8,21 @@ import { CssBaseline } from '@material-ui/core';
 import { ThemeSwitcher } from './theme';
 import { BrowserRouter } from 'react-router-dom';
 
+document.body.onscroll = e => {
+  if ( ( window.innerHeight + window.scrollY ) >= document.body.offsetHeight ) {
+    if ( window.loadMore ) window.loadMore()
+  }
+}
+
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ThemeSwitcher>
-          <CssBaseline/>
-          <App/>
-        </ThemeSwitcher>
-      </BrowserRouter>
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+<React.StrictMode>
+  <Provider store={store}>
+    <BrowserRouter>
+      <ThemeSwitcher>
+        <CssBaseline/>
+        <App/>
+      </ThemeSwitcher>
+    </BrowserRouter>
+  </Provider>
+</React.StrictMode>,
+document.getElementById('root') );

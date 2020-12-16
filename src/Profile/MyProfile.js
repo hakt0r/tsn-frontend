@@ -11,6 +11,7 @@ import Tabs    from '@material-ui/core/Tabs';
 import Posts   from '../Post/Posts';
 import AddPost from '../Post/AddPost';
 import Friends from './Friends';
+import { Message, People, Subject } from '@material-ui/icons';
 
 export default function MyProfile() {
   const { tab = "main" } = useParams();
@@ -18,14 +19,12 @@ export default function MyProfile() {
   const user    = useSelector( s => s.auth.user );
   return <>
   <Tabs value={tab} onChange={ (e,tab) => history.push(`/${tab}`) }>
-    <Tab label="Timeline" value="main" />
-    <Tab label="Post"     value="post" />
-    <Tab label="Friends"  value="friends" />
-    <Tab label="Messages" value="messages" />
+    <Tab label={<Subject/>} value="main" />
+    <Tab label={<People/>}  value="friends" />
+    <Tab label={<Message/>} value="messages" />
   </Tabs>
   <Switch>
     <Route path="/friends"  component={Friends}/>
-    <Route path="/post/add" component={AddPost}/>
     <Route path="/">
       <Posts id={user.id} />
     </Route>

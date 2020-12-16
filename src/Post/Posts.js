@@ -1,4 +1,7 @@
 
+import { Done } from "@material-ui/icons";
+import { useState } from "react";
+import { useEffect } from "react";
 import { usePost, useUserPosts } from "../Data/hooks";
 import Post from "./Post";
 

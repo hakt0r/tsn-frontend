@@ -17,6 +17,7 @@ import Show from '../Layout/Show';
 import { addFriend, rejectFriend } from './actions';
 import { HighlightOff, PersonAddDisabled, ThumbDown, ThumbUp } from '@material-ui/icons';
 import FlexRow from '../Layout/FlexRow';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles( paperTheme );
 
@@ -27,7 +28,9 @@ function Friend({id,incoming,outgoing}) {
   <FlexRow key={friend.id} className={`${classes.row} ${incoming?'incoming':outgoing?'outgoing':''}`}>
     <Avatar src={friend.avatar}/>
     <Typography variant="h6" style={{marginLeft:'1ch'}}>
-      {friend.name}
+      <Link to={`/user/${friend.id}`}>
+        {friend.name}
+      </Link>
     </Typography>
     <FlexGrow/>
     <IconButton onClick={e=>rejectFriend(friend.id)}>

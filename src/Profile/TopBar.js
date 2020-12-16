@@ -32,9 +32,6 @@ export default function TopBar() {
     <Link to="/">
       <Avatar src={user.avatar || logo} className={classes.large}/>
     </Link>&nbsp;
-    <Typography variant="h5">
-      {auth.user.name}
-    </Typography>
     <span style={{flexGrow:1}}></span>
     <IfAuth>
       <Search/>&nbsp;
