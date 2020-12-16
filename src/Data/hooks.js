@@ -9,9 +9,9 @@ import {
 
 export function useUser(id) {
   id = id.id ? id.id : id;
-  const user = useSelector( state => state.cache.user[id] );
   useEffect( e => getUser(id), [id]);
-  return user || { name:'User', id };
+  const  user = useSelector( state => state.cache.user[id] );
+  return user || { name:'Loading...', id };
 }
 
 export function useUsers(list) {
@@ -28,7 +28,7 @@ export function useUsers(list) {
       return have;
     }, [ list, userCache ]
   );
-  return users;
+  return users || [];
 }
 
 export function usePost(id) {
@@ -40,11 +40,11 @@ export function usePost(id) {
 export function useUserPosts(id) {
   const post = useSelector( state => state.cache.postsFor[id] );
   useEffect( e => getUserPosts(id), [id]);
-  return post;
+  return post || [];
 }
 
 export function useUserPostsOnly(id) {
   const post = useSelector( state => state.cache.postsOnlyFor[id] );
   useEffect( e => getUserPostsOnly(id), [id]);
-  return post;
+  return post || [];
 }

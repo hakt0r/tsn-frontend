@@ -7,7 +7,7 @@ import EmailField     from './EmailField';
 import NameField      from './NameField';
 import LoginButton    from './LoginButton';
 import StatusSnackbar from './StatusSnackbar';
-import { POST } from '../Data/api';
+import { Cache }      from '../Data/api';
 
 import { statusFail, statusSuccess } from './actions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,7 +38,7 @@ export default function Register() {
 function requestLogin ( state, dispatch ){
   const { email, password } = state;
 
-  POST( 'auth/login', { email, password } )
+  Cache.post( '/api/auth/login', { email, password } )
   .then(
     ({ data, response }) => {
       if ( response.ok ){

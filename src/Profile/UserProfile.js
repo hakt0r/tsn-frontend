@@ -3,13 +3,12 @@ import React from 'react';
 import Posts from '../Post/Posts';
 import { useParams } from 'react-router-dom';
 import { Avatar, Grid, IconButton, Paper, Typography } from '@material-ui/core';
-import { paperTheme } from "../styles";
-import { makeStyles } from "@material-ui/core/styles";
 import { addFriend } from './actions';
 import { PersonAdd } from '@material-ui/icons';
 import StyledBadge from '../Layout/StyledBadge';
 import { useUser } from '../Data/hooks';
-
+import { makeStyles } from "@material-ui/core/styles";
+import { paperTheme } from "../styles";
 const useStyles = makeStyles( paperTheme );
 
 function User ({id}) {

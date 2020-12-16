@@ -9,7 +9,7 @@ export function PostRef (props){
 }
 
 export default function Posts({id}){
-  const posts   = useUserPosts(id);
+  const posts = useUserPosts(id);
   if ( ! posts ) return null;
   return posts.map( (post,index)=>
     <Post key={index} {...{userId:id,post,index,root:post,level:0,stack:[]}}/>

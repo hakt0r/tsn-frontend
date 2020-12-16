@@ -74,6 +74,10 @@ export function authReducer( state=authDefaults, action ){
         showStatus:  true,
         status:      action.status
       };
+
+    case "auth:modify":
+      return { ...state, user:{ ...state.user, ...action.modify }};
+  
     case '@@INIT': return authDefaults;
     default:       return state;
   }

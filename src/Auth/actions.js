@@ -43,7 +43,7 @@ export const logoutRequest = async (dispatch)=> {
   if ( ! API.tokens ) return;
   try {
     await Cache.post('/api/auth/logout',{
-      refreshToken:API.tokens.refresh.token
+      refreshToken: API.tokens.refresh.token
     });
   } catch ( error ){}
   statusFail({ message: "Logged out!" });

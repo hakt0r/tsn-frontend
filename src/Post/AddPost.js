@@ -14,12 +14,10 @@ import Show from '../Layout/Show';
 
 const useStyles = makeStyles( paperTheme );
 
-const { POST, API } = require("../Data/api");
+const { Cache } = require("../Data/api");
 
-const addPost = async ( message, post )=> {
-  let uri = `post/`;
-  if ( post ) uri = `post/${post.id}`;
-  await POST( uri, { message } );
+const addPost = async ( message )=> {
+  await Cache.post( `/api/post/`, { message } );
 }
 
 function insertAtCursor(myField, myValue) {
@@ -40,7 +38,7 @@ function insertAtCursor(myField, myValue) {
   return myField.value;
 }
 
-export default function AddPost({post}){
+export default function AddPost(){
   const classes = useStyles();
   const history = useHistory();
   const ref     = useRef()
@@ -102,9 +100,8 @@ export default function AddPost({post}){
         variant="contained"
         color="primary"
         onClick={ async e => {
-          await addPost(state,post);
+          await addPost(state);
           history.push('/');
-          if ( post ) setState('');
         }}
       >Post</Button>
     </Grid>

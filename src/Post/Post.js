@@ -216,9 +216,7 @@ export default function Post ({post,index,level,root,stack,userId}) {
 
   <Show when={state.showComments}>
     { post.comments.map( post =>
-      <Grow>
-        <PostRef key={post} {...{post,index,classes,root,level:level+1,stack:[...stack,post]}}/>
-      </Grow>
+      <PostRef key={post} {...{post,index,classes,root,level:level+1,stack:[...stack,post]}}/>
     )}
   </Show>
   </div> );

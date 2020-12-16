@@ -24,7 +24,7 @@ function Friend({id,incoming,outgoing}) {
   const friend  = useUser(id);
   const classes = useStyles();
   return (
-  <FlexRow key={friend.id} className={classes.row}>
+  <FlexRow key={friend.id} className={`${classes.row} ${incoming?'incoming':outgoing?'outgoing':''}`}>
     <Avatar src={friend.avatar}/>
     <Typography variant="h6" style={{marginLeft:'1ch'}}>
       {friend.name}

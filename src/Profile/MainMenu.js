@@ -7,23 +7,15 @@ import { logoutRequest } from '../Auth/actions';
 import { Cache }         from '../Data/api';
 import { IconButton }    from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 export default function MainMenu({post}) {
   const dispatch = useDispatch();
-  const avatar = useSelector( state => state.auth.user.avatar );
+  const history  = useHistory();
   const user   = useSelector( state => state.auth.user );
   const [ element, setElement ] = React.useState(null);
   const handleClick = (event) => setElement(event.currentTarget);
   const handleClose =      () => setElement(null);
-  const avatarUpload = e => {
-    handleClose(e);
-    const read = new FileReader();
-    read.readAsDataURL(e.target.files[0]);
-    read.onload = e => {
-      Cache.patch(`/api/user/${user.id}`,{avatar:e.target.result});
-      dispatch({type:'auth:avatar',url:e.target.result});
-    }
-  }
   return (
     <div>
       <IconButton onClick={handleClick}>
@@ -35,11 +27,9 @@ export default function MainMenu({post}) {
         open={Boolean(element)}
         onClose={handleClose}
       >
-        <MenuItem component="label">
-          Avatar...
-          <input type="file" hidden onChange={avatarUpload}/>
+        <MenuItem key="edit" onClick={e=>handleClose(history.push('/profile/edit'))}>
+          Settings
         </MenuItem>
-        <MenuItem key="edit" onClick={handleClose}>Edit</MenuItem>
         <Divider/>
         <MenuItem onClick={e => logoutRequest(dispatch)}>Logout</MenuItem>
       </Menu>

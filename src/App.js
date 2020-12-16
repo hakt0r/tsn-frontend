@@ -8,12 +8,13 @@ import UserProfile           from "./Profile/UserProfile";
 import CheckAuth             from "./Auth/CheckAuth";
 import Center                from "./Layout/Center";
 import MyProfile             from "./Profile/MyProfile";
+import EditProfile           from "./Profile/Edit";
 import Background            from "./Layout/Background";
 import Logo                  from "./Layout/Logo";
 import StatusSnackbar        from "./Auth/StatusSnackbar";
-
+import AddPost from "./Post/AddPost";
 function App() {
-  // <StatusSnackbar/>
+  <StatusSnackbar/>
   return <>
     <CheckAuth/>
     <Background/>
@@ -28,6 +29,8 @@ function App() {
       <Switch>
         <Route path="/posts" exact component={Posts}/>
         <Route path="/user/:userId" component={UserProfile} />
+        <Route path="/post/add" component={AddPost}/>
+        <Route path="/profile/edit" component={EditProfile} />
         <Route path="/:tab?" component={MyProfile}/>
       </Switch>
     </IfAuth>

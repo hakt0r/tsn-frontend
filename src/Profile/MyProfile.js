@@ -24,7 +24,7 @@ export default function MyProfile() {
     <Tab label="Messages" value="messages" />
   </Tabs>
   <Switch>
-    <Route path="/friends" component={Friends}/>
+    <Route path="/friends"  component={Friends}/>
     <Route path="/post/add" component={AddPost}/>
     <Route path="/">
       <Posts id={user.id} />

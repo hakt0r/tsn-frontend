@@ -14,7 +14,7 @@ export const cacheReducer = ( state=cacheDefaults, action )=> {
   switch ( action.type ){
 
     case "user":
-      return { ...state, user:{ ...state.user, [action.user.id]: user } };
+      return { ...state, user:{ ...state.user, [user.id]: user } };
     
     case "users":
       updated = { ...state.user };
