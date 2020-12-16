@@ -1,5 +1,7 @@
 
-import Post from "./Post";
+
+import Post        from "./Post";
+import { usePost } from "../Data/hooks";
 
 export function PostRef (props){
   const post = usePost( props.post );

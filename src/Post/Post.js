@@ -27,7 +27,7 @@ import {
 } from "@material-ui/icons";
 
 import { useUser } from "../Data/hooks";
-import { PostRef } from "./Posts";
+import { PostRef } from "./PostRef";
 import { IconButton } from "@material-ui/core";
 
 import Show from "../Layout/Show";
@@ -47,9 +47,13 @@ const useStyles = makeStyles( theme => ({
     paddingLeft:theme.spacing(3),
   },
   post: {
-    "& .comment": {
+    "&.comment": {
+      "&.first": {
+        borderTop:`solid 1px ${theme.palette.divider}`
+      },
       margin: 0,
-      borderTopLeftRadius: 0
+      borderRadius: 0,
+      background:'none',
     },
     overflow: 'hidden',
     marginLeft: theme.spacing(1),
@@ -82,9 +86,7 @@ const useStyles = makeStyles( theme => ({
 }));
 
 const addPost = async ( message, post )=> {
-  let uri = `post/`;
-  if ( post ) uri = `post/${post.id}`;
-  await Cache.post( uri, { message } );
+  await Cache.post( `/api/post/${post.id}`, { message } );
 }
 
 function EditPost({message,submit,cancel}){
@@ -111,7 +113,7 @@ function EditPost({message,submit,cancel}){
   </div>
 }
 
-export default function Post ({post,index,level,root,stack,userId}) {
+export default function Post ({post,index,level}) {
   const dispatch = useDispatch();
   const classes = useStyles();
   const [ state, setState ] = useState({
@@ -123,7 +125,11 @@ export default function Post ({post,index,level,root,stack,userId}) {
   });
   post.author = useUser(post.author);
   const hideEditor = ()=> setState({...state,editPost:false});
-  const style = level === 0 ? classes.post : `${classes.post} comment`;
+  const style = level === 0
+    ? classes.post
+    : index === 0
+    ? `${classes.post} comment first`
+    : `${classes.post} comment`;
   return ( <div className={style}>
   <div className={classes.postEdge}></div>
   <div className={classes.postBody}>
@@ -214,8 +220,8 @@ export default function Post ({post,index,level,root,stack,userId}) {
   </div>
 
   <Show when={state.showComments}>
-    { post.comments.map( post =>
-      <PostRef key={post} {...{post,index,classes,root,level:level+1,stack:[...stack,post]}}/>
+    { post.comments.map( (post,index) =>
+      <PostRef key={post} {...{post,index,classes,level:level+1}}/>
     )}
   </Show>
   </div> );

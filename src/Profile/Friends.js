@@ -28,7 +28,7 @@ function Friend({id,incoming,outgoing}) {
   <FlexRow key={friend.id} className={`${classes.row} ${incoming?'incoming':outgoing?'outgoing':''}`}>
     <Avatar src={friend.avatar}/>
     <Typography variant="h6" style={{marginLeft:'1ch'}}>
-      <Link to={`/user/${friend.id}`}>
+      <Link className={classes.friendLink} to={`/user/${friend.id}`}>
         {friend.name}
       </Link>
     </Typography>

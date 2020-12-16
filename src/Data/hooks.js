@@ -1,9 +1,8 @@
 
-import { useMemo } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useMemo }     from "react";
+import { useEffect }   from "react";
 import { useSelector } from "react-redux";
-import moment from 'moment';
+
 import {
   getPost, getUser, getUserPosts, getUserPostsOnly, getUsers
 } from "./actions";
@@ -46,12 +45,9 @@ export function useUserPosts(id) {
       window.loadMore = async ()=> {
         const lastPost = post[post.length-1];
         const lastDate = lastPost ? (new Date(lastPost.createdAt)).getTime() : Date.now();
-        console.log('loadMorePosts',post);
         getUserPosts(id,lastDate);
       }
-      return e => {
-        window.loadMore = false
-      }
+      return e => window.loadMore = false
     },[post]);
   return post || [];
 }
@@ -59,5 +55,15 @@ export function useUserPosts(id) {
 export function useUserPostsOnly(id) {
   const post = useSelector( state => state.cache.postsOnlyFor[id] );
   useEffect( e => getUserPostsOnly(id), [id]);
+  useEffect(
+    e => {
+      window.loadMore = async ()=> {
+        const lastPost = post[post.length-1];
+        const lastDate = lastPost ? (new Date(lastPost.createdAt)).getTime() : Date.now();
+        getUserPostsOnly(id,lastDate);
+      }
+      return e => window.loadMore = false
+    },[post]);
   return post || [];
 }
+

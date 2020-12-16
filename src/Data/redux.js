@@ -7,10 +7,9 @@ const cacheDefaults = {
   group:        {},
   search:       {}
 };
-
 export const cacheReducer = ( state=cacheDefaults, action )=> {
   const { userId, user, users, post, posts, list, model, field, match } = action;
-  let updated;
+  let updated, have, more;
   switch ( action.type ){
 
     case "user":
@@ -29,14 +28,22 @@ export const cacheReducer = ( state=cacheDefaults, action )=> {
       posts.forEach( post => updated[post.id] = posts );
       return { ...state, post:updated };
 
+    case "user:posts:reset":
+      return { ...state, postsFor: { ...state.postsFor, [userId]: [] } };
+
     case "user:posts":
-      const have = state.postsFor[userId];
-      const more = ! state.postsFor[userId] ? posts : have.concat(posts);
+      have = state.postsFor[userId];
+      more = ! state.postsFor[userId] ? posts : have.concat(posts);
       return { ...state, postsFor: { ...state.postsFor, [userId]: more } };
 
-    case "user:posts:only":
-      return { ...state, postsOnlyFor: { ...state.postsOnlyFor, [userId]: posts } };
+    case "user:posts:only:reset":
+      return { ...state, postsOnlyFor: { ...state.postsOnlyFor, [userId]: [] } };
 
+    case "user:posts:only":
+      have = state.postsOnlyFor[userId];
+      more = ! state.postsOnlyFor[userId] ? posts : have.concat(posts);
+      return { ...state, postsOnlyFor: { ...state.postsOnlyFor, [userId]: more } };
+  
     case "search:results":
       return { ...state, search:{ list, model, field, match } };
 

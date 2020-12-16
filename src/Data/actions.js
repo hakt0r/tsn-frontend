@@ -22,12 +22,21 @@ export const getUsers = ( arrayOfUserIds ) => {
   )
 }
 
-export const getUserPostsOnly = (userId)=> {
-  Cache.fetch(`/api/user/${userId}/mine`)
-  .then( response => dispatch({ type:"user:posts:only", posts: response.data, userId }) )
-}
+export const getUserPostsOnly = ( userId, before )=> {
+  if ( ! before ) {
+    dispatch({ type:"user:posts:only:reset", userId })
+    before = Date.now()
+  }
+  Cache.fetch(`/api/post/from/${userId}?before=${before}`)
+  .then( response => {
+    dispatch({ type:"user:posts:only", posts: response.data, userId })
+  })}
 
-export const getUserPosts = (userId, before = Date.now() )=> {
+export const getUserPosts = ( userId, before  )=> {
+  if ( ! before ) {
+    dispatch({ type:"user:posts:reset", userId })
+    before = Date.now()
+  }
   Cache.fetch(`/api/user/${userId}/posts?before=${before}`)
   .then( response => {
     dispatch({ type:"user:posts", posts: response.data, userId })

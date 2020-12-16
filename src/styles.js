@@ -1,3 +1,4 @@
+import { fade } from "@material-ui/core";
 
 export const paperTheme = theme => ({
   root: {
@@ -37,6 +38,20 @@ export const paperTheme = theme => ({
       linear-gradient(0deg,   ${theme.palette.divider}      0px, transparent 4px),
       linear-gradient(-90deg, ${theme.palette.divider}      0px, transparent 4px),
       linear-gradient(90deg,  ${theme.palette.info.dark} 0px, transparent 4px)
-    `}
+    `},
+    '&:hover':{
+      cursor:'pointer',
+      background: `
+      linear-gradient(0deg,   ${fade(theme.palette.primary.light,0.1)} 0, transparent 100%),
+      linear-gradient(0deg,   ${theme.palette.divider}      0px, transparent 4px),
+      linear-gradient(-90deg, ${theme.palette.divider}      0px, transparent 4px),
+      linear-gradient(90deg,  ${theme.palette.info.dark} 0px, transparent 4px)
+    `},
+  },
+  friendLink: {
+    color: 'white',
+    textDecoration:'none',
+    '&:active':{color:'white'},
+    '&:visited':{color:'white'},
   }
 });
