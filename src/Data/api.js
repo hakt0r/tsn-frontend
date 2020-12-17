@@ -58,7 +58,7 @@ export class Cache {
       // then return the result of that request
       return new Promise( resolve => state.waiting.push(resolve) );
 
-    } else if ( state.date > Date.now() - 1000 ) {
+    } else if ( state.date > Date.now() - 60000 ) {
       // If we have a response to this response to this exact request
       // that is AT MOST one second old, return that resonse (cache)
       return { ...state.response, data:state.data, json: ()=> state.data };

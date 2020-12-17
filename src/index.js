@@ -9,7 +9,7 @@ import { ThemeSwitcher } from './theme';
 import { BrowserRouter } from 'react-router-dom';
 
 document.body.onscroll = e => {
-  if ( ( window.innerHeight + window.scrollY ) >= document.body.offsetHeight ) {
+  if ( ( window.innerHeight + window.scrollY ) >= document.body.offsetHeight - 10 ) {
     if ( window.loadMore ) window.loadMore()
   }
 }

@@ -22,9 +22,6 @@ export default function MyProfile() {
   const history = useHistory();
   const user = useSelector( s => s.auth.user );
 
-  console.log(user)
-  if ( ! user.id ) debugger
-
   return <>
   <Tabs value={tab} onChange={ (e,tab) => history.push(`/${tab}`) }>
     <Tab label={<TimelineIcon/>} value="main" />

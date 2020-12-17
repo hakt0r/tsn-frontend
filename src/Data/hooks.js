@@ -33,37 +33,48 @@ export function useUsers(list) {
 
 export function usePost(id) {
   const post = useSelector( state => state.cache.post[id] );
-  useEffect( e => getPost(id), [id]);
+  useEffect( e => { if ( ! post ) getPost(id) }, [id,post]);
   return post;
 }
 
 export function useUserPosts(id) {
-  const post = useSelector( state => state.cache.postsFor[id] );
+  const post = useSelector( state => state.cache.postsFor[id] ) || [];
+  const lastPostId = post[post.length-1];
+  const lastPost = useSelector( state => state.cache.post[lastPostId] );
+  const lastDate = lastPost
+  ? (new Date(lastPost.createdAt)).getTime()
+  : Date.now();
+  if (lastPost) console.log(lastPost.message, lastPost.date)
   useEffect( e => getUserPosts(id), [id]);
   useEffect(
     e => {
+      console.log('arm')
       window.loadMore = async ()=> {
-        const lastPost = post[post.length-1];
-        const lastDate = lastPost ? (new Date(lastPost.createdAt)).getTime() : Date.now();
+        console.log('trigger')
         getUserPosts(id,lastDate);
       }
-      return e => window.loadMore = false
-    },[post]);
+      return e => {
+        console.log('disarm')
+        window.loadMore = false
+      }
+    },[id,lastDate]);
   return post || [];
 }
 
 export function useUserPostsOnly(id) {
-  const post = useSelector( state => state.cache.postsOnlyFor[id] );
+  const post = useSelector( state => state.cache.postsOnlyFor[id] ) || [];
+  const lastPostId = post[post.length-1];
+  const lastPost = useSelector( state => state.cache.post[lastPostId] );
+  const lastDate = lastPost
+  ? (new Date(lastPost.createdAt)).getTime()
+  : Date.now();
   useEffect( e => getUserPostsOnly(id), [id]);
   useEffect(
     e => {
-      window.loadMore = async ()=> {
-        const lastPost = post[post.length-1];
-        const lastDate = lastPost ? (new Date(lastPost.createdAt)).getTime() : Date.now();
-        getUserPostsOnly(id,lastDate);
-      }
+      console.log('arm')
+      window.loadMore = async ()=> getUserPostsOnly(id,lastDate);
       return e => window.loadMore = false
-    },[post]);
+    },[id,lastDate]);
   return post || [];
 }
 

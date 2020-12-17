@@ -53,8 +53,8 @@ export default function Friends () {
   const user   = useUser( userId );
   if ( ! user.friends ) return null;
   return ( <>
-  { user.friends.map( friend => <Friend id={friend.id||friend}/> )}
-  { user.friendRequests.map( friend => <Friend incoming id={friend.id||friend}/> )}
-  { user.friendRequestsSent.map( friend => <Friend outgoing id={friend.id||friend}/> )}
+  { user.friends.map( (friend,index) => <Friend key={index} id={friend.id||friend}/> )}
+  { user.friendRequests.map( (friend,index) => <Friend key={index} incoming id={friend.id||friend}/> )}
+  { user.friendRequestsSent.map( (friend,index) => <Friend key={index} outgoing id={friend.id||friend}/> )}
   </> );
 }

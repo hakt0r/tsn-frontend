@@ -1,14 +1,10 @@
 
-import PostTools      from "./PostTools";
-import { makeStyles } from "@material-ui/core/styles";
 import moment         from 'moment';
+import PostTools      from "./PostTools";
 import FlexRow        from "../Layout/FlexRow";
 import FlexGrow       from "../Layout/FlexGrow";
 import { Link }       from 'react-router-dom';
-
-import {
-  fade, TextField
-} from "@material-ui/core";
+import TextField      from "@material-ui/core/TextField";
 
 import {
   useState
@@ -34,56 +30,7 @@ import Show from "../Layout/Show";
 import { editPost } from "../Data/actions";
 import Cache from "../Data/api";
 
-const useStyles = makeStyles( theme => ({
-  postEdge: {
-    position:'absolute',
-    width: theme.spacing(1),
-    height: '100%',
-    top:0, left:0,
-    backgroundColor: fade(theme.palette.primary.light,0.2),
-  },
-  postBody: {
-    padding:theme.spacing(2),
-    paddingLeft:theme.spacing(3),
-  },
-  post: {
-    "&.comment": {
-      "&.first": {
-        borderTop:`solid 1px ${theme.palette.divider}`
-      },
-      margin: 0,
-      borderRadius: 0,
-      background:'none',
-    },
-    overflow: 'hidden',
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    borderBottom: `${fade(theme.palette.primary.light,0.2)} solid 1px`,
-    marginTop: theme.spacing(1),
-    position:'relative',
-    borderBottom: `solid 1px ${theme.palette.divider}`,
-    borderRadius: theme.spacing(1),
-    background: `linear-gradient(180deg, transparent 96%, ${theme.palette.divider} 100%)`,
-    "& a:visited": {
-      color: 'white'
-    },
-    "& a:hover": {
-      color: 'white'
-    }
-  },
-  microLinks:{
-    fontSize: 10,
-    clear: 'both',
-    opacity: 0.8,
-    "& > *":{
-      fontSize: 10,
-    },
-    "& > a":{
-      cursor: 'pointer',
-      color: theme.palette.primary.light
-    }
-  }
-}));
+import useStyles from './styles';
 
 const addPost = async ( message, post )=> {
   await Cache.post( `/api/post/${post.id}`, { message } );
@@ -155,7 +102,7 @@ export default function Post ({post,index,level}) {
           ? Cache.delete(`/api/like/post/${post.id}/like`).then( ({data})=> dispatch({type:"post",post:data}))
           : Cache.put(`/api/like/post/${post.id}/like`   ).then( ({data})=> dispatch({type:"post",post:data}))
       }>
-        <Badge badgeContent={post.reactions.length} color="primary">
+        <Badge badgeContent={(post.reactions.find( r => r.type === 'Like') || {users:[]}).users.length} color="primary">
           <Favorite style={{ color: post.yourReactions.Like ? 'red' : 'black' }}/>
         </Badge>
       </IconButton>&nbsp;
@@ -167,16 +114,24 @@ export default function Post ({post,index,level}) {
 
     </span>
 
-    <Typography variant="body1">
     { state.edit
     ? <EditPost
         message={post.message}
         submit={(message)=>hideEditor(editPost({id:post.id,message}))}
         cancel={hideEditor}
       />
-    : post.message }
+    : <>
+      <Show when={post.images.length > 0}>
+        <img
+          style={{maxWidth:'100%',borderRadius:'10px',marginTop:8}}
+          src={post.images[0]}
+        />
+      </Show>
+      <Typography variant="body1">
+        {post.message}
+      </Typography>
+    </>}
       
-    </Typography>
 
     { state.addComment
     ? <><TextField
