@@ -3,7 +3,7 @@ import { Button } from "@material-ui/core";
 import { TextField } from "@material-ui/core"
 import { useRef, useState } from "react"
 import { useSelector } from "react-redux";
-import Cache from "../Data/api";
+import Axios from "../Data/api";
 import FlexRow from "../Layout/FlexRow";
 import FlexGrow from "../Layout/FlexGrow";
 
@@ -27,13 +27,13 @@ export default function EditProfile(){
     const read = new FileReader();
     read.readAsDataURL(e.target.files[0]);
     read.onload = e => {
-      Cache.patch(`/api/user/${user.id}`,{avatar:e.target.result});
+      Axios.patch(`/api/user/${user.id}`,{avatar:e.target.result});
       dispatch({type:'auth:modify',modify:{avatar:e.target.result}});
     }
   }
   const save = () => {
     const modify = {name:state.name};
-    Cache.patch(`/api/user/${user.id}`,modify);
+    Axios.patch(`/api/user/${user.id}`,modify);
     dispatch({type:'auth:modify',modify});
   }
   const reset = () => setState(defaults);

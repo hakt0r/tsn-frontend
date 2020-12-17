@@ -1,11 +1,11 @@
 
 import { store } from '../redux';
-import { Cache } from '../Data/api';
+import { Axios } from '../Data/api';
 
 const { dispatch } = store;
 
 export const search = async ( match, type='User', field='name' ) => {
-  const response = await Cache.post(
+  const response = await Axios.post(
     '/api/search',
     { match, type, field }
   );
@@ -15,11 +15,11 @@ export const search = async ( match, type='User', field='name' ) => {
 };
 
 export const addFriend = async (id) => {
-  const response = await Cache.post(`/api/friends/approve`,{id});
+  const response = await Axios.post(`/api/friends/approve`,{id});
   dispatch({type:'user',user:response.data});
 };
 
 export const rejectFriend = async (id) => {
-  const response = await Cache.post(`/api/friends/reject`,{id});
+  const response = await Axios.post(`/api/friends/reject`,{id});
   dispatch({type:'user',user:response.data});
 };

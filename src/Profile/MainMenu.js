@@ -4,7 +4,6 @@ import Menu              from '@material-ui/core/Menu';
 import MenuItem          from '@material-ui/core/MenuItem';
 import { Divider }       from '@material-ui/core';
 import { logoutRequest } from '../Auth/actions';
-import { Cache }         from '../Data/api';
 import { IconButton }    from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';

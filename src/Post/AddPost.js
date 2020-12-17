@@ -11,13 +11,12 @@ import { useRef } from "react";
 import { EmojiEmotions } from "@material-ui/icons";
 import { InputAdornment } from "@material-ui/core";
 import Show from '../Layout/Show';
+import { Axios } from "../Data/api";
 
 const useStyles = makeStyles( paperTheme );
 
-const { Cache } = require("../Data/api");
-
 const addPost = async ( message )=> {
-  await Cache.post( `/api/post/`, { message } );
+  await Axios.post( `/api/post/`, { message } );
 }
 
 function insertAtCursor(myField, myValue) {

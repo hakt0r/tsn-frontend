@@ -1,6 +1,6 @@
 
 import { useSelector } from "react-redux";
-import { API, Cache }  from "../Data/api";
+import { Axios }       from "../Data/api";
 
 const authDefaults = {
   email        : 'anx.test.user@gmail.com',
@@ -40,8 +40,8 @@ export function authReducer( state=authDefaults, action ){
       return { ...state, showStatus: false };
 
     case 'auth:status:success':
-      API.tokens = action.tokens;
-      API.user   = action.user;
+      Axios.tokens = action.tokens;
+      Axios.user   = action.user;
       localStorage.setItem('tsn-auth',JSON.stringify({
         user: action.user,
         tokens: action.tokens
@@ -61,8 +61,8 @@ export function authReducer( state=authDefaults, action ){
       };
 
     case 'auth:status:fail':
-      API.tokens = false;
-      API.user   = false;
+      Axios.tokens = false;
+      Axios.user   = false;
       localStorage.setItem(
         'tsn-auth',
         JSON.stringify({ user: false, tokens: false }

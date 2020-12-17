@@ -1,16 +1,15 @@
 
-import { CallToActionSharp } from '@material-ui/icons';
-import { API, Cache } from '../Data/api';
-import { store }      from '../redux';
+import { Axios } from '../Data/api';
+import { store } from '../redux';
 
 const { dispatch } = store;
 
-API.dispatch = dispatch;
+Axios.dispatch = dispatch;
 
 export async function requestRegister(){
   const { email, name, password } = store.getState().auth;
   try {
-    const { data } = await Cache.post(
+    const { data } = await Axios.post(
       '/api/auth/register',
       { email, name, password }
     );
@@ -24,7 +23,7 @@ export async function requestRegister(){
 export async function requestLogin (){
   const { email, password } = store.getState().auth;
   try {
-    const { data } = await Cache.post(
+    const { data } = await Axios.post(
       '/api/auth/login',
       { email, password }
     );
@@ -40,10 +39,10 @@ export function toggleLoginMode(){
 }
 
 export const logoutRequest = async (dispatch)=> {
-  if ( ! API.tokens ) return;
+  if ( ! Axios.tokens ) return;
   try {
-    await Cache.post('/api/auth/logout',{
-      refreshToken: API.tokens.refresh.token
+    await Axios.post('/api/auth/logout',{
+      refreshToken: Axios.tokens.refresh.token
     });
   } catch ( error ){}
   statusFail({ message: "Logged out!" });
@@ -68,12 +67,12 @@ export async function checkAuth(){
   try {
     const json = localStorage.getItem('tsn-auth');
     const data = JSON.parse(json);
-    await Cache.post(
+    await Axios.post(
       '/api/auth/test', {},
       { headers: { Authorization: data.tokens.access.token }
     });
-    API.tokens = data.tokens;
-    API.user   = data.user;
+    Axios.tokens = data.tokens;
+    Axios.user   = data.user;
     statusSuccess( 
       data.user,
       data.tokens,

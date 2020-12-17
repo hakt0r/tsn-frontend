@@ -1,43 +1,38 @@
 
-export const API = {
-  tokens: false
-};
-
 /*
-  This setup is trying to solve 2 problems:
+This setup is trying to solve 2 problems:
 
-  I don't want to make the same request twice...
-      1. ... at the same time
+I don't want to make the same request twice...
+1. ... at the same time
       2. ... or in rapid succession
 
-  Approach:
-    I create a Cache, to store the response and data
+      Approach:
+      I create a Axios, to store the response and data
       - If I have a recent response simply return that on
       - If a equivalent request is already running,
         merge with that request 
 
-  Solution:
+        Solution:
     Mimic fetch and Axios, but add my own Logic -
     so from the outside it looks like using Axios or fetch.
 
     But internally:
-      - Store the data from a recent request in a cache
-      - Merge requests using Promises
+    - Store the data from a recent request in a cache
+    - Merge requests using Promises
   */
 
-export class Cache {
-
-  static byURL = {};
-
+ export class Axios {
+  static byURL         = {};
   static STATE_LOADING = 1;
   static STATE_READY   = 2;
   static REFRESHING    = false;
-
+  static tokens        = false
+  
   static async fetch( uri, options={} ){
 
     // make sure there is options.headers, and add token if it exists
     options.headers = options.headers || {};
-    if ( API.tokens ) options.headers.authorization = API.tokens.access.token;
+    if ( Axios.tokens ) options.headers.authorization = Axios.tokens.access.token;
 
     // deduplication:
     //  create a unique identifier like
@@ -47,12 +42,12 @@ export class Cache {
     const hash = options.hash || uri + '::' + JSON.stringify(options);
 
     // Try to get the current state for this [hash], could be undefined
-    let state = Cache.byURL[hash];
+    let state = Axios.byURL[hash];
 
     // If it is undefined, create a new state for this [hash]
-    if ( ! state ) state = Cache.byURL[hash] = {};
+    if ( ! state ) state = Axios.byURL[hash] = {};
 
-    if ( state.status === Cache.STATE_LOADING ){
+    if ( state.status === Axios.STATE_LOADING ){
       // The request is already being made... but there is no response yet.
       // We want to wait untilt that original request is finished and
       // then return the result of that request
@@ -69,7 +64,7 @@ export class Cache {
     // that is AT MOST one second old, we need to do the request
 
     // make other requests to the same [hash] wait for this request
-    state.status = Cache.STATE_LOADING;
+    state.status = Axios.STATE_LOADING;
     
     // in this array we will collect the other waiting requests
     state.waiting = [];
@@ -79,9 +74,9 @@ export class Cache {
     let     data = await response.json();
 
     // if authentication fails, try to get new tokens and do the request again
-    if ( response.status === 401 && API.tokens ){
-      if ( await Cache.refreshTokens() ){
-        options.headers.authorization = API.tokens.access.token;
+    if ( response.status === 401 && Axios.tokens ){
+      if ( await Axios.refreshTokens() ){
+        options.headers.authorization = Axios.tokens.access.token;
         response = await fetch( uri, options );
             data = await response.json();    
       } 
@@ -92,7 +87,7 @@ export class Cache {
     state.date     = Date.now();
     state.response = response;
     state.data     = data;
-    state.status   = Cache.STATE_READY;
+    state.status   = Axios.STATE_READY;
 
     // emulates axios and fetch behaviour
     response.json  = ()=> data; // makes await response.json() work (fetch)
@@ -109,38 +104,38 @@ export class Cache {
   static async refreshTokens () {
 
     // If there's a refrsh going on already, wait in line...
-    if ( Cache.REFRESHING ){
-      return new Promise( resolve => Cache.REFRESHING.push(resolve) );
+    if ( Axios.REFRESHING ){
+      return new Promise( resolve => Axios.REFRESHING.push(resolve) );
     }
 
     // Open up a queue for other requests to wait until we got our tokens or failed 
-    Cache.REFRESHING = [];
+    Axios.REFRESHING = [];
 
     // Try to get new tokens using our refresh tokens
     const response = await fetch('/api/auth/refresh-tokens',{
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ refreshToken: API.tokens.refresh.token })
+      body: JSON.stringify({ refreshToken: Axios.tokens.refresh.token })
     });
     
     // If we don't get status 200 we were not successful
     if ( response.status !== 200 ){
       // Tell the others waiting for us, that it failed
-      Cache.REFRESHING.forEach( resolve => resolve(false) );
-      Cache.REFRESHING = false;
+      Axios.REFRESHING.forEach( resolve => resolve(false) );
+      Axios.REFRESHING = false;
       // Tell redux that we don't have authentication anymore
-      API.dispatch({ type: 'auth:status:fail', status: "Refresh Failed" });
+      Axios.dispatch({ type: 'auth:status:fail', status: "Refresh Failed" });
       // Tell the original request that initiated the refresh that it failed as well
       return false;
     }
 
     // Else the refresh worked, so we get the tokens...
-    const tokens = API.tokens = await response.json();
+    const tokens = Axios.tokens = await response.json();
     // Tell the others waiting for us, that it worked
-    Cache.REFRESHING.forEach( resolve => resolve(true) );
-    Cache.REFRESHING = false;
+    Axios.REFRESHING.forEach( resolve => resolve(true) );
+    Axios.REFRESHING = false;
     // Tell redux that we have new tokens
-    API.dispatch({ type: 'auth:recover', tokens });
+    Axios.dispatch({ type: 'auth:recover', tokens });
     // Tell the original request that initiated the refresh that it worked as well
     return true;
   }
@@ -152,31 +147,30 @@ export class Cache {
       options.headers['content-type'] = 'application/json';
       options.body = JSON.stringify(body);
     }
-    return Cache.fetch( uri, options );
+    return Axios.fetch( uri, options );
   }
 
   static get( uri, body, options ) {
-    return Cache.methodic( uri, 'GET', body, options );
+    return Axios.methodic( uri, 'GET', body, options );
   }
 
   static post( uri, body, options ) {
-    return Cache.methodic( uri, 'POST', body, options );
+    return Axios.methodic( uri, 'POST', body, options );
   }
 
   static put( uri, body, options ) {
-    return Cache.methodic( uri, 'PUT', body, options );
+    return Axios.methodic( uri, 'PUT', body, options );
   }
 
   static patch( uri, body, options ) {
-    return Cache.methodic( uri, 'PATCH', body, options );
+    return Axios.methodic( uri, 'PATCH', body, options );
   }
 
   static delete( uri, body, options ) {
-    return Cache.methodic( uri, 'DELETE', body, options );
+    return Axios.methodic( uri, 'DELETE', body, options );
   }
 
 }
 
-window.API = API;
-
-export default Cache;
+window.Axios = Axios;
+export default Axios;

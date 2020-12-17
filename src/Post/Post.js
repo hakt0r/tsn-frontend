@@ -28,12 +28,12 @@ import { IconButton } from "@material-ui/core";
 
 import Show from "../Layout/Show";
 import { editPost } from "../Data/actions";
-import Cache from "../Data/api";
+import Axios from "../Data/api";
 
 import useStyles from './styles';
 
 const addPost = async ( message, post )=> {
-  await Cache.post( `/api/post/${post.id}`, { message } );
+  await Axios.post( `/api/post/${post.id}`, { message } );
 }
 
 function EditPost({message,submit,cancel}){
@@ -99,8 +99,8 @@ export default function Post ({post,index,level}) {
       <IconButton size="small"
         onClick={
         e => post.yourReactions.Like
-          ? Cache.delete(`/api/like/post/${post.id}/like`).then( ({data})=> dispatch({type:"post",post:data}))
-          : Cache.put(`/api/like/post/${post.id}/like`   ).then( ({data})=> dispatch({type:"post",post:data}))
+          ? Axios.delete(`/api/like/post/${post.id}/like`).then( ({data})=> dispatch({type:"post",post:data}))
+          : Axios.put(`/api/like/post/${post.id}/like`   ).then( ({data})=> dispatch({type:"post",post:data}))
       }>
         <Badge badgeContent={(post.reactions.find( r => r.type === 'Like') || {users:[]}).users.length} color="primary">
           <Favorite style={{ color: post.yourReactions.Like ? 'red' : 'black' }}/>

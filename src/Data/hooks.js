@@ -44,19 +44,11 @@ export function useUserPosts(id) {
   const lastDate = lastPost
   ? (new Date(lastPost.createdAt)).getTime()
   : Date.now();
-  if (lastPost) console.log(lastPost.message, lastPost.date)
   useEffect( e => getUserPosts(id), [id]);
   useEffect(
     e => {
-      console.log('arm')
-      window.loadMore = async ()=> {
-        console.log('trigger')
-        getUserPosts(id,lastDate);
-      }
-      return e => {
-        console.log('disarm')
-        window.loadMore = false
-      }
+      window.loadMore = async ()=> getUserPosts(id,lastDate);
+      return e => window.loadMore = false
     },[id,lastDate]);
   return post || [];
 }
